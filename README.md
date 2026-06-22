@@ -2,7 +2,7 @@
 
 > Senior Frontend Developer | Angular Expert | Hamburg, Germany
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-Live-7f5af0?style=for-the-badge)](https://YOUR_USERNAME.gitlab.io/my-portfolio/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Live-7f5af0?style=for-the-badge)](https://shahin4u000.github.io/portfolio/)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/kazi-ataul-goni-71aa335b)
 
 ---
