@@ -263,6 +263,75 @@
         return texture;
     }
 
+    // SCSS Logo Texture
+    function createSCSSLogoTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#0f111a';
+        ctx.beginPath();
+        ctx.roundRect(10, 10, 236, 236, 40);
+        ctx.fill();
+
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#cf649a';
+        ctx.stroke();
+
+        ctx.fillStyle = '#cf649a';
+        ctx.font = 'bold 72px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 18;
+        ctx.fillText('SCSS', 128, 128);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
+    // HTML5 Logo Texture
+    function createHTML5LogoTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#0f111a';
+        ctx.beginPath();
+        ctx.roundRect(10, 10, 236, 236, 40);
+        ctx.fill();
+
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#e34f26';
+        ctx.stroke();
+
+        ctx.fillStyle = '#e34f26';
+        ctx.beginPath();
+        ctx.moveTo(68, 48);
+        ctx.lineTo(188, 48);
+        ctx.lineTo(178, 178);
+        ctx.lineTo(128, 208);
+        ctx.lineTo(78, 178);
+        ctx.closePath();
+        ctx.shadowColor = '#ff6b35';
+        ctx.shadowBlur = 18;
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 88px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('5', 128, 124);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
     // --- SETUP THREE.JS SCENE, CAMERA, RENDERER ---
     const canvas = document.getElementById('webgl-canvas');
     if (!canvas) return;
@@ -312,39 +381,30 @@
     let maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
 
     // =========================================================================
-    // THEME 0: 3D DEVELOPER SITTING ON FUTURISTIC PLATFORM (THE USER SPECIFICATION)
+    // THEME 0: REALISTIC HUMAN 3D DEVELOPER ON FUTURISTIC PLATFORM (HIGH-RES)
     // =========================================================================
     const devThemeGroup = new THREE.Group();
     scene.add(devThemeGroup);
 
-    // 1. Futuristic Floating Rock Platform
-    const platformGroup = new THREE.Group();
-    devThemeGroup.add(platformGroup);
+    // 1. High-Resolution Realistic Human Developer Character (Photorealistic Render with Alpha)
+    const humanTextureLoader = new THREE.TextureLoader();
+    const humanCharTex = humanTextureLoader.load('assets/developer_human.png');
+    humanCharTex.generateMipmaps = true;
+    humanCharTex.minFilter = THREE.LinearMipmapLinearFilter;
 
-    // Irregular rocky top slab
-    const rockGeo = new THREE.CylinderGeometry(15, 12, 3.8, 14);
-    // Perturb vertices slightly for natural rock look
-    const posAttr = rockGeo.attributes.position;
-    for (let i = 0; i < posAttr.count; i++) {
-        const vx = posAttr.getX(i);
-        const vy = posAttr.getY(i);
-        const vz = posAttr.getZ(i);
-        const noise = (Math.sin(vx * 0.8) + Math.cos(vz * 0.8)) * 0.4;
-        posAttr.setY(i, vy + noise);
-    }
-    rockGeo.computeVertexNormals();
-
-    const rockMat = new THREE.MeshStandardMaterial({
-        color: 0x16132b,
-        roughness: 0.85,
-        metalness: 0.25,
-        flatShading: true
+    const humanCharMat = new THREE.MeshBasicMaterial({
+        map: humanCharTex,
+        transparent: true,
+        opacity: 1.0,
+        depthWrite: false,
+        side: THREE.DoubleSide
     });
-    const rockPlatform = new THREE.Mesh(rockGeo, rockMat);
-    rockPlatform.position.y = -8;
-    platformGroup.add(rockPlatform);
+    // Photorealistic human developer sitting cross-legged with laptop & glowing Angular shield
+    const humanCharMesh = new THREE.Mesh(new THREE.PlaneGeometry(36, 36), humanCharMat);
+    humanCharMesh.position.set(0, 1.0, 0);
+    devThemeGroup.add(humanCharMesh);
 
-    // Glowing Neon Purple Light Strip below the platform
+    // 2. Glowing Neon Purple & Cyan Light Rings beneath Platform
     const neonRingGeo1 = new THREE.TorusGeometry(15.2, 0.45, 16, 90);
     const neonRingMat1 = new THREE.MeshBasicMaterial({
         color: 0xb44dff,
@@ -354,10 +414,9 @@
     });
     const neonRing1 = new THREE.Mesh(neonRingGeo1, neonRingMat1);
     neonRing1.rotation.x = Math.PI / 2;
-    neonRing1.position.y = -8.2;
-    platformGroup.add(neonRing1);
+    neonRing1.position.y = -10.2;
+    devThemeGroup.add(neonRing1);
 
-    // Secondary lower cyan neon accent ring
     const neonRingGeo2 = new THREE.TorusGeometry(12.4, 0.22, 16, 80);
     const neonRingMat2 = new THREE.MeshBasicMaterial({
         color: 0x00d5ff,
@@ -367,145 +426,10 @@
     });
     const neonRing2 = new THREE.Mesh(neonRingGeo2, neonRingMat2);
     neonRing2.rotation.x = Math.PI / 2;
-    neonRing2.position.y = -9.6;
-    platformGroup.add(neonRing2);
+    neonRing2.position.y = -11.6;
+    devThemeGroup.add(neonRing2);
 
-    // 2. 3D Developer Character (Sitting Cross-legged with Laptop)
-    const charGroup = new THREE.Group();
-    charGroup.position.set(0, -6.1, 0);
-    devThemeGroup.add(charGroup);
-
-    // Crossed Legs (indigo jeans)
-    const legMat = new THREE.MeshStandardMaterial({ color: 0x192138, roughness: 0.7 });
-    const leftLeg = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.4, 7.5, 12), legMat);
-    leftLeg.rotation.set(Math.PI / 2.3, 0.6, -Math.PI / 4);
-    leftLeg.position.set(-2.6, 0.8, 1.2);
-    charGroup.add(leftLeg);
-
-    const rightLeg = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.4, 7.5, 12), legMat);
-    rightLeg.rotation.set(Math.PI / 2.3, -0.6, Math.PI / 4);
-    rightLeg.position.set(2.6, 0.8, 1.2);
-    charGroup.add(rightLeg);
-
-    // White Sneakers
-    const shoeMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.3 });
-    const shoeL = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.4, 3.8), shoeMat);
-    shoeL.position.set(-4.8, 0.4, 3.2);
-    shoeL.rotation.set(0, 0.4, 0);
-    charGroup.add(shoeL);
-
-    const shoeR = new THREE.Mesh(new THREE.BoxGeometry(2.4, 1.4, 3.8), shoeMat);
-    shoeR.position.set(4.8, 0.4, 3.2);
-    shoeR.rotation.set(0, -0.4, 0);
-    charGroup.add(shoeR);
-
-    // Torso (Black Modern Hoodie)
-    const hoodieMat = new THREE.MeshStandardMaterial({ color: 0x0c0d13, roughness: 0.6 });
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 3.2, 7.2, 16), hoodieMat);
-    torso.position.set(0, 4.6, -0.4);
-    charGroup.add(torso);
-
-    // Hoodie Glowing Code Logo on Chest
-    const logoBadgeMat = new THREE.MeshBasicMaterial({
-        map: codeBracketsTex,
-        transparent: true,
-        blending: THREE.AdditiveBlending
-    });
-    const logoPlane = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 3.2), logoBadgeMat);
-    logoPlane.position.set(0, 5.0, 3.0);
-    charGroup.add(logoPlane);
-
-    // Hoodie Sleeves & Arms angled toward laptop
-    const armMat = hoodieMat;
-    const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.0, 5.5, 12), armMat);
-    leftArm.rotation.set(Math.PI / 4, 0, -0.4);
-    leftArm.position.set(-3.6, 5.2, 1.2);
-    charGroup.add(leftArm);
-
-    const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.0, 5.5, 12), armMat);
-    rightArm.rotation.set(Math.PI / 4, 0, 0.4);
-    rightArm.position.set(3.6, 5.2, 1.2);
-    charGroup.add(rightArm);
-
-    // Hands
-    const skinMat = new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.5 });
-    const handL = new THREE.Mesh(new THREE.SphereGeometry(0.8, 12, 12), skinMat);
-    handL.position.set(-1.8, 4.2, 3.6);
-    charGroup.add(handL);
-
-    const handR = new THREE.Mesh(new THREE.SphereGeometry(0.8, 12, 12), skinMat);
-    handR.position.set(1.8, 4.2, 3.6);
-    charGroup.add(handR);
-
-    // Head
-    const head = new THREE.Mesh(new THREE.SphereGeometry(2.3, 24, 24), skinMat);
-    head.position.set(0, 9.8, -0.2);
-    charGroup.add(head);
-
-    // Stylish Hair (Dark Volumetric)
-    const hairMat = new THREE.MeshStandardMaterial({ color: 0x050508, roughness: 0.9 });
-    const hair = new THREE.Mesh(new THREE.SphereGeometry(2.5, 16, 16), hairMat);
-    hair.position.set(0, 10.4, -0.5);
-    hair.scale.set(1.05, 1.0, 1.15);
-    charGroup.add(hair);
-
-    // Stylish Glasses (Dark-rimmed)
-    const glassesMat = new THREE.MeshBasicMaterial({ color: 0x00d5ff, wireframe: true });
-    const glassesL = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.08, 8, 20), glassesMat);
-    glassesL.position.set(-0.85, 9.8, 1.9);
-    charGroup.add(glassesL);
-
-    const glassesR = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.08, 8, 20), glassesMat);
-    glassesR.position.set(0.85, 9.8, 1.9);
-    charGroup.add(glassesR);
-
-    // 3. Laptop with Glowing Angular Shield Logo on back
-    const laptopGroup = new THREE.Group();
-    laptopGroup.position.set(0, 3.8, 2.5);
-    charGroup.add(laptopGroup);
-
-    // Keyboard Base
-    const laptopBase = new THREE.Mesh(
-        new THREE.BoxGeometry(6.6, 0.25, 4.6),
-        new THREE.MeshStandardMaterial({ color: 0x232736, roughness: 0.3, metalness: 0.8 })
-    );
-    laptopGroup.add(laptopBase);
-
-    // Laptop Screen Screen (Tilted open)
-    const laptopScreenGroup = new THREE.Group();
-    laptopScreenGroup.position.set(0, 0.15, -2.1);
-    laptopScreenGroup.rotation.x = -Math.PI / 2.7;
-    laptopGroup.add(laptopScreenGroup);
-
-    const screenLid = new THREE.Mesh(
-        new THREE.BoxGeometry(6.6, 4.4, 0.22),
-        new THREE.MeshStandardMaterial({ color: 0x181a24, roughness: 0.3, metalness: 0.8 })
-    );
-    screenLid.position.set(0, 2.2, 0);
-    laptopScreenGroup.add(screenLid);
-
-    // Glowing Angular Shield on Back of Laptop Screen (Facing camera!)
-    const angularLaptopBadge = new THREE.Mesh(
-        new THREE.PlaneGeometry(2.8, 2.8),
-        new THREE.MeshBasicMaterial({
-            map: angularLogoTex,
-            transparent: true,
-            blending: THREE.AdditiveBlending
-        })
-    );
-    angularLaptopBadge.position.set(0, 2.2, -0.15);
-    angularLaptopBadge.rotation.y = Math.PI;
-    laptopScreenGroup.add(angularLaptopBadge);
-
-    // Glowing Screen Interior casting blue light onto developer
-    const screenInnerGlow = new THREE.Mesh(
-        new THREE.PlaneGeometry(5.8, 3.8),
-        new THREE.MeshBasicMaterial({ color: 0x00d5ff, transparent: true, opacity: 0.75 })
-    );
-    screenInnerGlow.position.set(0, 2.2, 0.13);
-    laptopScreenGroup.add(screenInnerGlow);
-
-    // 4. Glowing Purple Orbital Rings wrapping around the Developer (from image!)
+    // 3. Glowing Purple & Cyan Orbital Ribbons wrapping around Developer
     const orbitRibbonGeo1 = new THREE.TorusGeometry(18.5, 0.18, 16, 120);
     const orbitRibbonMat1 = new THREE.MeshBasicMaterial({
         color: 0xb44dff,
@@ -528,7 +452,9 @@
     orbitRibbon2.rotation.set(-Math.PI / 3.0, -Math.PI / 3.5, Math.PI / 5);
     devThemeGroup.add(orbitRibbon2);
 
-    // 5. Floating Technology Cards Orbiting the Developer
+    // 4. Floating Technology Cards Orbiting the Developer (Angular Primary!)
+    const scssLogoTex = createSCSSLogoTexture();
+    const html5LogoTex = createHTML5LogoTexture();
     const techCards = [];
 
     function createTechCard(texture, size = 4.2) {
@@ -542,35 +468,49 @@
         return mesh;
     }
 
-    // 1. Angular Shield Logo Card (Dominant & Most Prominent)
-    const cardAngular = createTechCard(angularLogoTex, 5.4);
-    cardAngular.position.set(-14, 5, 5);
-    cardAngular.userData = { baseY: 5, floatSpeed: 1.4, rotSpeed: 0.005 };
+    // 1. Angular Shield Logo Card (PRIMARY AND MOST PROMINENT)
+    const cardAngular = createTechCard(angularLogoTex, 5.8);
+    cardAngular.position.set(-15, 6, 6);
+    cardAngular.userData = { baseY: 6, floatSpeed: 1.4, rotSpeed: 0.005 };
     devThemeGroup.add(cardAngular);
     techCards.push(cardAngular);
 
     // 2. TypeScript Logo Card
     const cardTS = createTechCard(tsLogoTex, 4.4);
-    cardTS.position.set(14, -2, 7);
+    cardTS.position.set(15, -2, 7);
     cardTS.userData = { baseY: -2, floatSpeed: 1.6, rotSpeed: -0.006 };
     devThemeGroup.add(cardTS);
     techCards.push(cardTS);
 
     // 3. Three.js Logo Card
     const cardThree = createTechCard(threeLogoTex, 4.4);
-    cardThree.position.set(13, 8, 4);
+    cardThree.position.set(14, 8, 4);
     cardThree.userData = { baseY: 8, floatSpeed: 1.3, rotSpeed: 0.005 };
     devThemeGroup.add(cardThree);
     techCards.push(cardThree);
 
     // 4. JavaScript Logo Card
     const cardJS = createTechCard(jsLogoTex, 4.2);
-    cardJS.position.set(13, 3, 9);
+    cardJS.position.set(14, 3, 9);
     cardJS.userData = { baseY: 3, floatSpeed: 1.5, rotSpeed: 0.007 };
     devThemeGroup.add(cardJS);
     techCards.push(cardJS);
 
-    // 6. Floating Asteroid & Crystal Rocks
+    // 5. SCSS Logo Card
+    const cardSCSS = createTechCard(scssLogoTex, 4.2);
+    cardSCSS.position.set(-14, 1, 8);
+    cardSCSS.userData = { baseY: 1, floatSpeed: 1.5, rotSpeed: -0.005 };
+    devThemeGroup.add(cardSCSS);
+    techCards.push(cardSCSS);
+
+    // 6. HTML5 Logo Card
+    const cardHTML = createTechCard(html5LogoTex, 4.0);
+    cardHTML.position.set(-12, -4, 6);
+    cardHTML.userData = { baseY: -4, floatSpeed: 1.7, rotSpeed: 0.006 };
+    devThemeGroup.add(cardHTML);
+    techCards.push(cardHTML);
+
+    // 5. Floating Asteroids & Crystal Rocks
     const floatingRocks = [];
     const rockPieceGeo = new THREE.DodecahedronGeometry(1.6, 0);
     const rockPieceMat = new THREE.MeshStandardMaterial({
@@ -1050,21 +990,21 @@
 
         const basePos = getThemeBasePos(currentThemeIndex);
 
-        // 1. ANIMATE THEME 0 (3D DEVELOPER PLATFORM)
+        // 1. ANIMATE THEME 0 (REALISTIC HUMAN 3D DEVELOPER ON PLATFORM)
         if (devThemeGroup.visible) {
             devThemeGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
 
-            // Platform gentle floating bob
-            platformGroup.position.y = Math.sin(elapsedTime * 1.2) * 0.8;
-            charGroup.position.y = -6.1 + Math.sin(elapsedTime * 1.2) * 0.8;
+            // Realistic Human developer natural breathing & floating bob
+            humanCharMesh.position.y = 1.0 + Math.sin(elapsedTime * 1.3) * 0.6;
+            humanCharMesh.scale.y = 1 + Math.sin(elapsedTime * 1.3) * 0.01;
 
-            // Rotating neon rings under rock
-            neonRing1.rotation.z = elapsedTime * 0.5;
-            neonRing2.rotation.z = -elapsedTime * 0.4;
+            // Rotating neon rings under rock platform
+            neonRing1.rotation.z = elapsedTime * 0.45;
+            neonRing2.rotation.z = -elapsedTime * 0.35;
 
             // Spiral purple ribbons wrapping developer
-            orbitRibbon1.rotation.z = elapsedTime * 0.25;
-            orbitRibbon2.rotation.z = -elapsedTime * 0.2;
+            orbitRibbon1.rotation.z = elapsedTime * 0.22;
+            orbitRibbon2.rotation.z = -elapsedTime * 0.18;
 
             // Floating technology cards orbiting & bobbing
             techCards.forEach((card, idx) => {
