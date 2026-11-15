@@ -332,6 +332,148 @@
         return texture;
     }
 
+    // RxJS Logo Texture
+    function createRxJSLogoTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#0f111a';
+        ctx.beginPath();
+        ctx.roundRect(10, 10, 236, 236, 40);
+        ctx.fill();
+
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#d80064';
+        ctx.stroke();
+
+        // RxJS Magenta Hexagon Badge
+        ctx.save();
+        ctx.translate(128, 128);
+        ctx.fillStyle = '#d80064';
+        ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 22;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+            const angle = (i * Math.PI) / 3 - Math.PI / 6;
+            const x = Math.cos(angle) * 78;
+            const y = Math.sin(angle) * 78;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fill();
+
+        // RxJS Text inside
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 64px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Rx', -4, -8);
+
+        ctx.font = 'bold 28px Inter, sans-serif';
+        ctx.fillText('JS', 2, 38);
+        ctx.restore();
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
+    // Procedural Alien Planet Surface with Craters & Rocky Terrain
+    function createAlienPlanetTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
+
+        // Dark basalt/obsidian base with deep purple-navy gradient
+        const bgGrad = ctx.createLinearGradient(0, 0, 1024, 1024);
+        bgGrad.addColorStop(0, '#0d0b1a');
+        bgGrad.addColorStop(0.5, '#070612');
+        bgGrad.addColorStop(1, '#04030a');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 1024, 1024);
+
+        // Rocky terrain noise and craters
+        const rng = (seed) => {
+            let s = seed;
+            return () => {
+                s = (s * 9301 + 49297) % 233280;
+                return s / 233280;
+            };
+        };
+        const rand = rng(42);
+
+        for (let i = 0; i < 65; i++) {
+            const cx = rand() * 1024;
+            const cy = rand() * 1024;
+            const r = 8 + rand() * 45;
+
+            // Crater shadow interior
+            const craterGrad = ctx.createRadialGradient(cx - r * 0.25, cy - r * 0.25, 1, cx, cy, r);
+            craterGrad.addColorStop(0, '#030206');
+            craterGrad.addColorStop(0.7, '#070612');
+            craterGrad.addColorStop(0.9, '#181432');
+            craterGrad.addColorStop(1, 'rgba(40, 30, 70, 0)');
+            ctx.fillStyle = craterGrad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Crater rim light (lit from top-left with electric-blue & purple rim)
+            ctx.strokeStyle = i % 2 === 0 ? 'rgba(0, 213, 255, 0.45)' : 'rgba(180, 77, 255, 0.5)';
+            ctx.lineWidth = 1.5 + rand() * 2.5;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, Math.PI * 0.8, Math.PI * 1.8);
+            ctx.stroke();
+
+            // Dark inner shadow rim opposite side
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.lineWidth = 2 + rand() * 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, -Math.PI * 0.2, Math.PI * 0.8);
+            ctx.stroke();
+        }
+
+        // Atmospheric dust / nebula mist overlay
+        const dustGrad = ctx.createRadialGradient(512, 100, 100, 512, 512, 600);
+        dustGrad.addColorStop(0, 'rgba(139, 53, 255, 0.12)');
+        dustGrad.addColorStop(0.6, 'rgba(36, 123, 255, 0.08)');
+        dustGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = dustGrad;
+        ctx.fillRect(0, 0, 1024, 1024);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.needsUpdate = true;
+        return texture;
+    }
+
+    // Atmospheric Haze Texture (Purple & Cyan Horizon Mist)
+    function createAtmosphericHazeTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+
+        const grad = ctx.createLinearGradient(0, 128, 0, 0);
+        grad.addColorStop(0, 'rgba(0, 213, 255, 0.6)');
+        grad.addColorStop(0.3, 'rgba(139, 53, 255, 0.4)');
+        grad.addColorStop(0.7, 'rgba(36, 123, 255, 0.15)');
+        grad.addColorStop(1, 'rgba(3, 4, 11, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 512, 128);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
     // --- SETUP THREE.JS SCENE, CAMERA, RENDERER ---
     const canvas = document.getElementById('webgl-canvas');
     if (!canvas) return;
@@ -373,6 +515,9 @@
     const threeLogoTex = createThreeLogoTexture();
     const jsLogoTex = createJSLogoTexture();
     const codeBracketsTex = createCodeBracketsTexture();
+    const rxjsLogoTex = createRxJSLogoTexture();
+    const alienPlanetTex = createAlienPlanetTexture();
+    const atmosphericHazeTex = createAtmosphericHazeTexture();
 
     // MOUSE & SCROLL STATE
     const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
@@ -381,12 +526,88 @@
     let maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
 
     // =========================================================================
-    // THEME 0: REALISTIC HUMAN 3D DEVELOPER ON FUTURISTIC PLATFORM (HIGH-RES)
+    // THEME 0: REALISTIC HUMAN 3D DEVELOPER ON MASSIVE ALIEN PLANET SURFACE
     // =========================================================================
     const devThemeGroup = new THREE.Group();
     scene.add(devThemeGroup);
 
-    // 1. High-Resolution Realistic Human Developer Character (Photorealistic Render with Alpha)
+    // 1. Massive Curved Alien Planet Surface at Bottom-Right with Craters & Rocky Terrain
+    const planetGeo = new THREE.SphereGeometry(78, 64, 48);
+    const planetMat = new THREE.MeshStandardMaterial({
+        map: alienPlanetTex,
+        roughness: 0.85,
+        metalness: 0.15,
+        emissive: 0x090518,
+        emissiveIntensity: 0.6
+    });
+    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
+    planetMesh.position.set(2, -84, -6);
+    planetMesh.rotation.set(0.35, 0.45, -0.2);
+    devThemeGroup.add(planetMesh);
+
+    // 2. Electric-Blue Planetary Horizon Glow Arc (Curving across the bottom)
+    const horizonArcGeo = new THREE.TorusGeometry(78.6, 0.65, 16, 120, Math.PI * 0.45);
+    const horizonArcMat = new THREE.MeshBasicMaterial({
+        color: 0x00d5ff,
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending
+    });
+    const horizonArc = new THREE.Mesh(horizonArcGeo, horizonArcMat);
+    horizonArc.position.set(2, -84, -4);
+    horizonArc.rotation.set(0.2, 0.1, Math.PI * 0.28);
+    devThemeGroup.add(horizonArc);
+
+    // Secondary Purple Atmospheric Rim along Horizon
+    const horizonPurpleGeo = new THREE.TorusGeometry(79.0, 0.95, 16, 120, Math.PI * 0.5);
+    const horizonPurpleMat = new THREE.MeshBasicMaterial({
+        color: 0x8b35ff,
+        transparent: true,
+        opacity: 0.55,
+        blending: THREE.AdditiveBlending
+    });
+    const horizonPurple = new THREE.Mesh(horizonPurpleGeo, horizonPurpleMat);
+    horizonPurple.position.set(2, -84, -5);
+    horizonPurple.rotation.set(0.2, 0.1, Math.PI * 0.25);
+    devThemeGroup.add(horizonPurple);
+
+    // Purple Atmospheric Volumetric Haze rising above Horizon
+    const hazeGeo = new THREE.PlaneGeometry(85, 26);
+    const hazeMat = new THREE.MeshBasicMaterial({
+        map: atmosphericHazeTex,
+        transparent: true,
+        opacity: 0.65,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    const hazeMesh = new THREE.Mesh(hazeGeo, hazeMat);
+    hazeMesh.position.set(0, -6, -2);
+    devThemeGroup.add(hazeMesh);
+
+    // 3. Subtle Distant Planet/Moon in Upper Cosmic Sky
+    const moonGeo = new THREE.SphereGeometry(9.5, 32, 32);
+    const moonMat = new THREE.MeshStandardMaterial({
+        map: alienPlanetTex,
+        roughness: 0.9,
+        emissive: 0x160f2a,
+        emissiveIntensity: 0.5,
+        color: 0x3d325a
+    });
+    const moonMesh = new THREE.Mesh(moonGeo, moonMat);
+    moonMesh.position.set(-45, 26, -30);
+    const moonGlowGeo = new THREE.SphereGeometry(9.8, 32, 16);
+    const moonGlowMat = new THREE.MeshBasicMaterial({
+        color: 0xb44dff,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide
+    });
+    const moonGlow = new THREE.Mesh(moonGlowGeo, moonGlowMat);
+    moonMesh.add(moonGlow);
+    devThemeGroup.add(moonMesh);
+
+    // 4. High-Resolution Realistic Human Developer Character (Black hoodie, jeans, sneakers, laptop with Angular Shield)
     const humanTextureLoader = new THREE.TextureLoader();
     const humanCharTex = humanTextureLoader.load('assets/developer_human.png');
     humanCharTex.generateMipmaps = true;
@@ -399,13 +620,12 @@
         depthWrite: false,
         side: THREE.DoubleSide
     });
-    // Photorealistic human developer sitting cross-legged with laptop & glowing Angular shield
     const humanCharMesh = new THREE.Mesh(new THREE.PlaneGeometry(36, 36), humanCharMat);
-    humanCharMesh.position.set(0, 1.0, 0);
+    humanCharMesh.position.set(0, 1.2, 2);
     devThemeGroup.add(humanCharMesh);
 
-    // 2. Glowing Neon Purple & Cyan Light Rings beneath Platform
-    const neonRingGeo1 = new THREE.TorusGeometry(15.2, 0.45, 16, 90);
+    // 5. Glowing Neon Purple & Cyan Light Rings beneath Developer Platform
+    const neonRingGeo1 = new THREE.TorusGeometry(14.8, 0.45, 16, 90);
     const neonRingMat1 = new THREE.MeshBasicMaterial({
         color: 0xb44dff,
         transparent: true,
@@ -414,10 +634,10 @@
     });
     const neonRing1 = new THREE.Mesh(neonRingGeo1, neonRingMat1);
     neonRing1.rotation.x = Math.PI / 2;
-    neonRing1.position.y = -10.2;
+    neonRing1.position.y = -9.8;
     devThemeGroup.add(neonRing1);
 
-    const neonRingGeo2 = new THREE.TorusGeometry(12.4, 0.22, 16, 80);
+    const neonRingGeo2 = new THREE.TorusGeometry(12.2, 0.22, 16, 80);
     const neonRingMat2 = new THREE.MeshBasicMaterial({
         color: 0x00d5ff,
         transparent: true,
@@ -426,11 +646,11 @@
     });
     const neonRing2 = new THREE.Mesh(neonRingGeo2, neonRingMat2);
     neonRing2.rotation.x = Math.PI / 2;
-    neonRing2.position.y = -11.6;
+    neonRing2.position.y = -11.0;
     devThemeGroup.add(neonRing2);
 
-    // 3. Glowing Purple & Cyan Orbital Ribbons wrapping around Developer
-    const orbitRibbonGeo1 = new THREE.TorusGeometry(18.5, 0.18, 16, 120);
+    // 6. Glowing Purple, Cyan & Blue Orbital Ribbons wrapping around Developer
+    const orbitRibbonGeo1 = new THREE.TorusGeometry(18.5, 0.2, 16, 120);
     const orbitRibbonMat1 = new THREE.MeshBasicMaterial({
         color: 0xb44dff,
         transparent: true,
@@ -441,9 +661,9 @@
     orbitRibbon1.rotation.set(Math.PI / 3.2, Math.PI / 4, 0);
     devThemeGroup.add(orbitRibbon1);
 
-    const orbitRibbonGeo2 = new THREE.TorusGeometry(20.5, 0.14, 16, 120);
+    const orbitRibbonGeo2 = new THREE.TorusGeometry(20.5, 0.16, 16, 120);
     const orbitRibbonMat2 = new THREE.MeshBasicMaterial({
-        color: 0x247bff,
+        color: 0x00d5ff,
         transparent: true,
         opacity: 0.85,
         blending: THREE.AdditiveBlending
@@ -452,9 +672,18 @@
     orbitRibbon2.rotation.set(-Math.PI / 3.0, -Math.PI / 3.5, Math.PI / 5);
     devThemeGroup.add(orbitRibbon2);
 
-    // 4. Floating Technology Cards Orbiting the Developer (Angular Primary!)
-    const scssLogoTex = createSCSSLogoTexture();
-    const html5LogoTex = createHTML5LogoTexture();
+    const orbitRibbonGeo3 = new THREE.TorusGeometry(15.8, 0.12, 16, 100);
+    const orbitRibbonMat3 = new THREE.MeshBasicMaterial({
+        color: 0x247bff,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending
+    });
+    const orbitRibbon3 = new THREE.Mesh(orbitRibbonGeo3, orbitRibbonMat3);
+    orbitRibbon3.rotation.set(Math.PI / 2.2, -Math.PI / 6, Math.PI / 4);
+    devThemeGroup.add(orbitRibbon3);
+
+    // 7. Floating Technology Cards Orbiting the Developer (Angular Primary + TS + JS + RxJS + Three.js)
     const techCards = [];
 
     function createTechCard(texture, size = 4.2) {
@@ -470,47 +699,40 @@
 
     // 1. Angular Shield Logo Card (PRIMARY AND MOST PROMINENT)
     const cardAngular = createTechCard(angularLogoTex, 5.8);
-    cardAngular.position.set(-15, 6, 6);
+    cardAngular.position.set(-15, 6, 7);
     cardAngular.userData = { baseY: 6, floatSpeed: 1.4, rotSpeed: 0.005 };
     devThemeGroup.add(cardAngular);
     techCards.push(cardAngular);
 
     // 2. TypeScript Logo Card
     const cardTS = createTechCard(tsLogoTex, 4.4);
-    cardTS.position.set(15, -2, 7);
+    cardTS.position.set(15, -2, 8);
     cardTS.userData = { baseY: -2, floatSpeed: 1.6, rotSpeed: -0.006 };
     devThemeGroup.add(cardTS);
     techCards.push(cardTS);
 
     // 3. Three.js Logo Card
     const cardThree = createTechCard(threeLogoTex, 4.4);
-    cardThree.position.set(14, 8, 4);
+    cardThree.position.set(14, 8, 5);
     cardThree.userData = { baseY: 8, floatSpeed: 1.3, rotSpeed: 0.005 };
     devThemeGroup.add(cardThree);
     techCards.push(cardThree);
 
     // 4. JavaScript Logo Card
     const cardJS = createTechCard(jsLogoTex, 4.2);
-    cardJS.position.set(14, 3, 9);
+    cardJS.position.set(15, 3, 9);
     cardJS.userData = { baseY: 3, floatSpeed: 1.5, rotSpeed: 0.007 };
     devThemeGroup.add(cardJS);
     techCards.push(cardJS);
 
-    // 5. SCSS Logo Card
-    const cardSCSS = createTechCard(scssLogoTex, 4.2);
-    cardSCSS.position.set(-14, 1, 8);
-    cardSCSS.userData = { baseY: 1, floatSpeed: 1.5, rotSpeed: -0.005 };
-    devThemeGroup.add(cardSCSS);
-    techCards.push(cardSCSS);
+    // 5. RxJS Logo Card (Essential Angular reactive stack!)
+    const cardRxJS = createTechCard(rxjsLogoTex, 4.4);
+    cardRxJS.position.set(-14, -1, 8);
+    cardRxJS.userData = { baseY: -1, floatSpeed: 1.5, rotSpeed: -0.005 };
+    devThemeGroup.add(cardRxJS);
+    techCards.push(cardRxJS);
 
-    // 6. HTML5 Logo Card
-    const cardHTML = createTechCard(html5LogoTex, 4.0);
-    cardHTML.position.set(-12, -4, 6);
-    cardHTML.userData = { baseY: -4, floatSpeed: 1.7, rotSpeed: 0.006 };
-    devThemeGroup.add(cardHTML);
-    techCards.push(cardHTML);
-
-    // 5. Floating Asteroids & Crystal Rocks
+    // 8. Floating Asteroids & Cosmic Rocks
     const floatingRocks = [];
     const rockPieceGeo = new THREE.DodecahedronGeometry(1.6, 0);
     const rockPieceMat = new THREE.MeshStandardMaterial({
@@ -519,13 +741,13 @@
         flatShading: true
     });
 
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 12; i++) {
         const rockPiece = new THREE.Mesh(rockPieceGeo, rockPieceMat);
-        const scale = 0.5 + Math.random() * 0.9;
+        const scale = 0.4 + Math.random() * 0.9;
         rockPiece.scale.set(scale, scale, scale);
-        const angle = (i / 9) * Math.PI * 2;
-        const dist = 17 + Math.random() * 9;
-        rockPiece.position.set(Math.cos(angle) * dist, -10 + Math.random() * 20, Math.sin(angle) * dist);
+        const angle = (i / 12) * Math.PI * 2;
+        const dist = 16 + Math.random() * 10;
+        rockPiece.position.set(Math.cos(angle) * dist, -9 + Math.random() * 20, Math.sin(angle) * dist);
         rockPiece.userData = {
             rotX: (Math.random() - 0.5) * 0.02,
             rotY: (Math.random() - 0.5) * 0.02,
@@ -990,42 +1212,58 @@
 
         const basePos = getThemeBasePos(currentThemeIndex);
 
-        // 1. ANIMATE THEME 0 (REALISTIC HUMAN 3D DEVELOPER ON PLATFORM)
+        // 1. ANIMATE THEME 0 (REALISTIC HUMAN 3D DEVELOPER ON MASSIVE ALIEN PLANET SURFACE)
         if (devThemeGroup.visible) {
             devThemeGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
 
+            // Hide wave mesh so the alien planet surface dominates the lower horizon cleanly
+            if (waveMesh) waveMesh.visible = false;
+
+            // Massive Alien Planet subtle cosmic rotation & terrain drift
+            planetMesh.rotation.y = elapsedTime * 0.02;
+
+            // Electric-Blue Planetary Horizon subtle breathing aura
+            horizonArc.rotation.z = Math.PI * 0.28 + Math.sin(elapsedTime * 0.4) * 0.006;
+            horizonPurple.rotation.z = Math.PI * 0.25 - Math.sin(elapsedTime * 0.35) * 0.006;
+
+            // Subtle Distant Planet slow rotation
+            moonMesh.rotation.y = elapsedTime * 0.03;
+
             // Realistic Human developer natural breathing & floating bob
-            humanCharMesh.position.y = 1.0 + Math.sin(elapsedTime * 1.3) * 0.6;
-            humanCharMesh.scale.y = 1 + Math.sin(elapsedTime * 1.3) * 0.01;
+            humanCharMesh.position.y = 1.2 + Math.sin(elapsedTime * 1.3) * 0.5;
+            humanCharMesh.scale.y = 1 + Math.sin(elapsedTime * 1.3) * 0.008;
 
             // Rotating neon rings under rock platform
             neonRing1.rotation.z = elapsedTime * 0.45;
             neonRing2.rotation.z = -elapsedTime * 0.35;
 
-            // Spiral purple ribbons wrapping developer
+            // Glowing purple & cyan orbital ribbons wrapping developer
             orbitRibbon1.rotation.z = elapsedTime * 0.22;
             orbitRibbon2.rotation.z = -elapsedTime * 0.18;
+            orbitRibbon3.rotation.z = elapsedTime * 0.14;
 
-            // Floating technology cards orbiting & bobbing
+            // Floating technology cards orbiting & bobbing (Angular, TS, Three.js, JS, RxJS)
             techCards.forEach((card, idx) => {
-                card.position.y = card.userData.baseY + Math.sin(elapsedTime * card.userData.floatSpeed + idx) * 0.9;
+                card.position.y = card.userData.baseY + Math.sin(elapsedTime * card.userData.floatSpeed + idx * 1.2) * 0.85;
                 card.rotation.y = Math.sin(elapsedTime * 0.8 + idx) * 0.15;
             });
 
-            // Tumbling crystal rocks
+            // Tumbling cosmic asteroids & crystal rocks
             floatingRocks.forEach((rock, idx) => {
                 rock.rotation.x += rock.userData.rotX;
                 rock.rotation.y += rock.userData.rotY;
                 rock.position.y = rock.userData.baseY + Math.sin(elapsedTime * rock.userData.speed + idx) * 1.2;
             });
 
-            // Parallax mouse tilt
-            devThemeGroup.rotation.y = mouse.x * 0.4;
-            devThemeGroup.rotation.x = -mouse.y * 0.25;
+            // Cinematic parallax mouse tilt
+            devThemeGroup.rotation.y = mouse.x * 0.35;
+            devThemeGroup.rotation.x = -mouse.y * 0.22;
 
             devThemeGroup.position.x = basePos.x;
             devThemeGroup.position.y = basePos.y + scrollFraction * 20;
             devThemeGroup.position.z = basePos.z - scrollFraction * 25;
+        } else {
+            if (waveMesh) waveMesh.visible = true;
         }
 
         // 2. ANIMATE THEME 1 (Cosmic Sphere)
