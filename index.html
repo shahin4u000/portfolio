@@ -932,16 +932,61 @@
             transform: translateY(-2px);
         }
 
-        /* SECTIONS COMMON */
+        /* SECTIONS COMMON - TRANSLUCENT FOR FULL-PAGE 3D CONTINUITY */
         .section {
             padding: 110px 48px;
             position: relative;
             z-index: 2;
-            background: #080810;
+            background: transparent;
         }
 
         .section:nth-of-type(even) {
-            background: #0b0b16;
+            background: transparent;
+        }
+
+        /* AMBIENT AURORA GLOWS ACROSS ALL SECTIONS */
+        .ambient-aurora {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.16;
+            z-index: 1;
+            animation: floatAurora 20s ease-in-out infinite alternate;
+        }
+
+        .aurora-1 {
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, #38bdf8 0%, transparent 70%);
+            top: 20%; right: 5%;
+        }
+
+        .aurora-2 {
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+            top: 50%; left: 0%;
+            animation-duration: 24s;
+            animation-delay: -6s;
+        }
+
+        .aurora-3 {
+            width: 550px; height: 550px;
+            background: radial-gradient(circle, #10b981 0%, transparent 70%);
+            top: 78%; right: 10%;
+            animation-duration: 28s;
+            animation-delay: -12s;
+        }
+
+        @keyframes floatAurora {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 35px) scale(1.15); }
+            100% { transform: translate(-35px, 60px) scale(0.92); }
+        }
+
+        /* ANIMATED TIMELINE BEAM */
+        @keyframes timelineBeam {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 0% 200%; }
         }
 
         .section-container {
@@ -1203,7 +1248,10 @@
             position: absolute;
             top: 10px; bottom: 10px; left: 10px;
             width: 2px;
-            background: linear-gradient(180deg, var(--accent), var(--cyan), transparent);
+            background: linear-gradient(180deg, #38bdf8 0%, #6366f1 35%, #10b981 70%, #38bdf8 100%);
+            background-size: 100% 200%;
+            animation: timelineBeam 4s linear infinite;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
         }
 
         .timeline-item {
@@ -1664,6 +1712,9 @@
 
     <div class="cursor-glow" id="cursorGlow"></div>
     <div class="noise-overlay"></div>
+    <div class="ambient-aurora aurora-1"></div>
+    <div class="ambient-aurora aurora-2"></div>
+    <div class="ambient-aurora aurora-3"></div>
     <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
 
     <!-- NAVIGATION -->
@@ -1934,7 +1985,7 @@
     </section>
 
     <!-- SKILLS SECTION -->
-    <section class="section" id="skills" style="background: var(--bg-secondary);">
+    <section class="section" id="skills">
         <div class="section-container">
             <div class="section-header reveal">
                 <p class="section-label">TECHNICAL SKILLS</p>
@@ -2155,7 +2206,7 @@
     </section>
 
     <!-- PROJECTS SECTION -->
-    <section class="section" id="projects" style="background: var(--bg-secondary);">
+    <section class="section" id="projects">
         <div class="section-container">
             <div class="section-header reveal">
                 <p class="section-label">SELECTED WORK</p>
@@ -2377,7 +2428,7 @@
     </section>
 
     <!-- CONTACT SECTION -->
-    <section class="section" id="contact" style="background: var(--bg-secondary);">
+    <section class="section" id="contact">
         <div class="section-container">
             <div class="section-header reveal">
                 <p class="section-label">GET IN TOUCH</p>

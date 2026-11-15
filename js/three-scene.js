@@ -753,33 +753,36 @@
     }
     stageGroup.add(coreGroup);
 
-    // 3. Controlled Ambient Particles: ~120 sparse, slow-drifting micro-data motes
-    const motesCount = 120;
+    // 3. Full-Page Ambient Particles: 260 slow-drifting micro-data motes across entire page depth
+    const motesCount = 260;
     const motesPositions = new Float32Array(motesCount * 3);
     const motesColors = new Float32Array(motesCount * 3);
     const motesData = [];
 
     const cCyan = new THREE.Color(0x38bdf8);
     const cIndigo = new THREE.Color(0x6366f1);
+    const cEmerald = new THREE.Color(0x10b981);
 
     for (let i = 0; i < motesCount; i++) {
-        const x = 2.6 + (Math.random() - 0.5) * 7.5;
-        const y = -2.0 + Math.random() * 6.5;
-        const z = (Math.random() - 0.5) * 6.0;
+        const x = (Math.random() - 0.5) * 20.0;
+        const y = -3.5 + Math.random() * 9.0;
+        const z = -4.0 + Math.random() * 8.0;
         motesPositions[i * 3] = x;
         motesPositions[i * 3 + 1] = y;
         motesPositions[i * 3 + 2] = z;
 
-        const mixColor = Math.random() > 0.4 ? cCyan : cIndigo;
+        const rnd = Math.random();
+        const mixColor = rnd > 0.55 ? cCyan : (rnd > 0.15 ? cIndigo : cEmerald);
         motesColors[i * 3] = mixColor.r;
         motesColors[i * 3 + 1] = mixColor.g;
         motesColors[i * 3 + 2] = mixColor.b;
 
         motesData.push({
-            speed: 0.003 + Math.random() * 0.005,
+            speed: 0.0025 + Math.random() * 0.005,
             baseX: x,
-            swayFreq: 0.5 + Math.random() * 1.2,
-            swayAmp: 0.08 + Math.random() * 0.12
+            swayFreq: 0.4 + Math.random() * 1.2,
+            swayAmp: 0.06 + Math.random() * 0.14,
+            parallax: 0.15 + (z + 4.0) * 0.06
         });
     }
 
@@ -1277,10 +1280,11 @@
             devThemeGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
 
             const isDesktop = window.innerWidth > 968;
-            const targetPosX = isDesktop ? 2.6 : 0;
-            const targetPosY = isDesktop ? 0.1 : -0.6;
-            const targetPosZ = isDesktop ? 0 : -1.5;
-            const targetScale = isDesktop ? 1.0 : 0.72;
+            // Full-page responsive 3D spatial trajectory across scroll
+            const targetPosX = isDesktop ? (2.6 - scrollFraction * 1.4) : 0;
+            const targetPosY = isDesktop ? (0.1 + Math.sin(scrollFraction * Math.PI) * 0.45) : -0.5;
+            const targetPosZ = isDesktop ? (-scrollFraction * 1.6) : -1.5;
+            const targetScale = isDesktop ? (1.0 - scrollFraction * 0.12) : 0.72;
 
             stageGroup.position.x = THREE.MathUtils.lerp(stageGroup.position.x, targetPosX, 0.08);
             stageGroup.position.y = THREE.MathUtils.lerp(stageGroup.position.y, targetPosY, 0.08);
@@ -1318,27 +1322,33 @@
                 }
             });
 
-            // Micro-data motes slow upward drift & subtle sway
+            // Micro-data motes slow upward drift, depth parallax & subtle sway
             const positions = motesGeo.attributes.position.array;
             for (let i = 0; i < motesCount; i++) {
                 const m = motesData[i];
                 positions[i * 3 + 1] += m.speed;
-                positions[i * 3] = m.baseX + Math.sin(elapsedTime * m.swayFreq) * m.swayAmp;
-                if (positions[i * 3 + 1] > 4.5) {
-                    positions[i * 3 + 1] = -2.0;
+                positions[i * 3] = m.baseX + Math.sin(elapsedTime * m.swayFreq) * m.swayAmp + mouse.x * m.parallax;
+                if (positions[i * 3 + 1] > 5.5) {
+                    positions[i * 3 + 1] = -3.2;
                 }
             }
             motesGeo.attributes.position.needsUpdate = true;
 
-            // Precision mouse parallax (lerp 0.05)
-            stageGroup.rotation.y = THREE.MathUtils.lerp(stageGroup.rotation.y, -0.55 + mouse.x * 0.25, 0.05);
-            stageGroup.rotation.x = THREE.MathUtils.lerp(stageGroup.rotation.x, 0.42 - mouse.y * 0.18, 0.05);
+            // Precision mouse parallax + subtle scroll pitch
+            const scrollPitch = Math.sin(scrollFraction * Math.PI * 2) * 0.10;
+            const scrollYaw = Math.cos(scrollFraction * Math.PI) * 0.18;
+            stageGroup.rotation.y = THREE.MathUtils.lerp(stageGroup.rotation.y, -0.55 + scrollYaw + mouse.x * 0.25, 0.05);
+            stageGroup.rotation.x = THREE.MathUtils.lerp(stageGroup.rotation.x, 0.42 + scrollPitch - mouse.y * 0.18, 0.05);
+
+            // Dynamic mouse-driven point light that follows cursor across page
+            devPointLight.position.x = THREE.MathUtils.lerp(devPointLight.position.x, mouse.x * 4.5 + 2.6, 0.08);
+            devPointLight.position.y = THREE.MathUtils.lerp(devPointLight.position.y, -mouse.y * 3.5 + 1.8, 0.08);
 
             if (waveMesh) waveMesh.visible = false;
 
-            // Scroll parallax
-            devThemeGroup.position.y = -scrollFraction * 4.0;
-            devThemeGroup.position.z = -scrollFraction * 6.0;
+            // Gentle scroll depth drift (keeps scene visible across entire page)
+            devThemeGroup.position.y = -scrollFraction * 1.5;
+            devThemeGroup.position.z = -scrollFraction * 2.0;
 
             // 3D Energy Shockwave expansion
             if (devBurstProgress < 1.0) {
