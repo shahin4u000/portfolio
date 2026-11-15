@@ -38,7 +38,7 @@
     <style>
         :root {
             --bg-primary: #0a0a0b;
-            --bg-secondary: #111113;
+            --bg-secondary: rgba(17, 17, 19, 0.85);
             --bg-card: #16161a;
             --bg-card-hover: #1c1c21;
             --text-primary: #fffffe;
@@ -1422,9 +1422,121 @@
             .education-grid { grid-template-columns: 1fr; }
             .projects-grid { grid-template-columns: 1fr; }
         }
+
+        /* ============================================
+           THREE.JS 3D CANVAS & 3D POLISH
+           ============================================ */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .btn-3d {
+            background: rgba(127, 90, 240, 0.12);
+            border: 1px solid rgba(127, 90, 240, 0.4);
+            color: var(--accent-light);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(127, 90, 240, 0.15);
+            transition: var(--transition);
+        }
+
+        .btn-3d:hover {
+            background: rgba(127, 90, 240, 0.25);
+            border-color: var(--accent-light);
+            color: #ffffff;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 30px rgba(127, 90, 240, 0.35);
+        }
+
+        .btn-3d-sparkle {
+            display: inline-block;
+            margin-right: 4px;
+            animation: pulse 1.6s ease-in-out infinite;
+        }
+
+        .three-mode-pill {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: rgba(17, 17, 19, 0.85);
+            border: 1px solid rgba(127, 90, 240, 0.3);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            z-index: 998;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            user-select: none;
+        }
+
+        .three-mode-pill:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(127, 90, 240, 0.35);
+        }
+
+        .three-mode-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .three-mode-pill { bottom: 16px; left: 16px; padding: 6px 12px; font-size: 0.7rem; }
+        }
+
+        /* 3D Dynamic Card Spotlight Glare */
+        .stat-card, .skill-category, .timeline-item, .education-card, .project-card, .lang-card, .about-image-card, .contact-card {
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .stat-card::after, .skill-category::after, .timeline-item::after, .education-card::after, .project-card::after, .lang-card::after, .about-image-card::after, .contact-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(circle 240px at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.08), transparent 80%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .stat-card:hover::after, .skill-category:hover::after, .timeline-item:hover::after, .education-card:hover::after, .project-card:hover::after, .lang-card:hover::after, .about-image-card:hover::after, .contact-card:hover::after {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+
+    <!-- 3D WEBGL BACKGROUND CANVAS -->
+    <canvas id="webgl-canvas"></canvas>
+    <div class="three-mode-pill" id="threeModePill" title="Click to trigger 3D energy burst" onclick="window.portfolio3D && window.portfolio3D.explode()">
+        <span class="three-mode-dot"></span>
+        <span>WebGL 3D Active</span>
+    </div>
 
     <div class="cursor-glow" id="cursorGlow"></div>
     <div class="noise-overlay"></div>
@@ -1481,6 +1593,9 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
                 <a href="#experience" class="btn btn-secondary">View My Work</a>
+                <button type="button" class="btn btn-3d" id="btnPulse3D" aria-label="Trigger 3D Pulse" onclick="window.portfolio3D && window.portfolio3D.explode()">
+                    <span class="btn-3d-sparkle">✨</span> 3D Pulse
+                </button>
             </div>
         </div>
     </section>
@@ -1544,6 +1659,7 @@
                     <div class="skill-category-icon">🎨</div>
                     <h3>Frontend & Frameworks</h3>
                     <div class="skill-item"><span class="skill-name">Angular (6–21)</span><div class="skill-bar-wrapper"><div class="skill-bar" style="width: 95%"></div></div></div>
+                    <div class="skill-item"><span class="skill-name">Three.js / WebGL / 3D</span><div class="skill-bar-wrapper"><div class="skill-bar" style="width: 82%"></div></div></div>
                     <div class="skill-item"><span class="skill-name">RxJS / NgRx</span><div class="skill-bar-wrapper"><div class="skill-bar" style="width: 88%"></div></div></div>
                     <div class="skill-item"><span class="skill-name">Bootstrap / Material</span><div class="skill-bar-wrapper"><div class="skill-bar" style="width: 90%"></div></div></div>
                     <div class="skill-item"><span class="skill-name">UI/UX (Figma)</span><div class="skill-bar-wrapper"><div class="skill-bar" style="width: 75%"></div></div></div>
@@ -1872,7 +1988,13 @@
 
         const heroBadge = document.querySelector('.hero-badge');
         if (heroBadge) {
-            const roles = ['✦ Available for opportunities', '✦ Angular Expert — 6+ Years', '✦ Senior Frontend Developer', '✦ Based in Hamburg, Germany'];
+            const roles = [
+                '✦ Available for opportunities',
+                '✦ Angular & Three.js 3D',
+                '✦ Senior Frontend Developer',
+                '✦ Based in Hamburg, Germany',
+                '✦ Interactive 3D Portfolio'
+            ];
             let roleIndex = 0;
             setInterval(() => {
                 roleIndex = (roleIndex + 1) % roles.length;
@@ -1939,5 +2061,13 @@
         console.log('%cLooking at my code? Nice! Feel free to reach out: Kazi.shahinbd@gmail.com', 'font-size: 14px; color: #2cb67d;');
     </script>
 
+    <!-- THREE.JS 3D ENGINE & SCENE -->
+    <script src="js/three.min.js"></script>
+    <script>
+        if (typeof THREE === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+        }
+    </script>
+    <script src="js/three-scene.js"></script>
 </body>
 </html>
