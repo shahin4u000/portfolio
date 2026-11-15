@@ -1119,7 +1119,7 @@
 
         document.body.setAttribute('data-theme', `theme-${index}`);
 
-        document.querySelectorAll('.theme-opt').forEach(btn => {
+        document.querySelectorAll('.theme-opt, .theme-card-opt').forEach(btn => {
             const btnTheme = btn.getAttribute('data-theme');
             if (isAutoMode && btnTheme === 'auto') {
                 btn.classList.add('active');
@@ -1260,8 +1260,8 @@
             devThemeGroup.rotation.x = -mouse.y * 0.22;
 
             devThemeGroup.position.x = basePos.x;
-            devThemeGroup.position.y = basePos.y + scrollFraction * 20;
-            devThemeGroup.position.z = basePos.z - scrollFraction * 25;
+            devThemeGroup.position.y = basePos.y - scrollFraction * 15;
+            devThemeGroup.position.z = basePos.z - scrollFraction * 20;
         } else {
             if (waveMesh) waveMesh.visible = true;
         }
@@ -1404,10 +1404,14 @@
                 themeMenu.classList.remove('show');
             });
 
-            document.querySelectorAll('.theme-opt').forEach(btn => {
+            document.querySelectorAll('.theme-opt, .theme-card-opt').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const themeVal = btn.getAttribute('data-theme');
+                    try {
+                        localStorage.setItem('portfolio_saved_theme', themeVal);
+                    } catch (err) {}
+
                     if (themeVal === 'auto') {
                         isAutoMode = true;
                         applyTheme(getDateAutoThemeIndex(), false);
@@ -1420,8 +1424,20 @@
             });
         }
 
-        // Default to Theme 0 (3D Developer Platform)
-        applyTheme(0, false);
+        // Restore saved theme from localStorage, or default to Theme 0 (3D Developer Platform)
+        let initialTheme = 0;
+        try {
+            const saved = localStorage.getItem('portfolio_saved_theme');
+            if (saved === 'auto') {
+                isAutoMode = true;
+                applyTheme(getDateAutoThemeIndex(), false);
+                return;
+            } else if (saved !== null && !isNaN(parseInt(saved, 10))) {
+                initialTheme = parseInt(saved, 10);
+            }
+        } catch (err) {}
+
+        applyTheme(initialTheme, false);
     }
 
     // =========================================================================
@@ -1429,7 +1445,7 @@
     // =========================================================================
     function initCardTilt() {
         const tiltCards = document.querySelectorAll(
-            '.hero-floating-glass-card, .stat-card, .skill-category, .timeline-item, .education-card, .project-card, .lang-card, .about-image-card, .contact-card'
+            '.hero-floating-glass-card, .stat-box, .skill-cat-card, .service-card, .timeline-item, .project-card, .about-portrait-card, .contact-info-card, .contact-form-card'
         );
 
         tiltCards.forEach(card => {
