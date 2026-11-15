@@ -92,7 +92,16 @@
 
     // --- 1. HERO 3D HOLOGRAPHIC CORE ---
     const heroGroup = new THREE.Group();
-    heroGroup.position.set(0, 4, 15);
+    function getHeroBasePos() {
+        const isDesktop = window.innerWidth > 968;
+        return {
+            x: isDesktop ? 18 : 0,
+            y: isDesktop ? 2 : -2,
+            z: 10
+        };
+    }
+    const initialPos = getHeroBasePos();
+    heroGroup.position.set(initialPos.x, initialPos.y, initialPos.z);
     scene.add(heroGroup);
 
     // Outer wireframe icosahedron
@@ -403,8 +412,10 @@
         heroGroup.rotation.x = -mouse.y * 0.3;
 
         // Hero group shifts subtly as user scrolls down
-        heroGroup.position.y = 4 + scrollFraction * 20;
-        heroGroup.position.z = 15 - scrollFraction * 25;
+        const basePos = getHeroBasePos();
+        heroGroup.position.x = basePos.x;
+        heroGroup.position.y = basePos.y + scrollFraction * 20;
+        heroGroup.position.z = basePos.z - scrollFraction * 25;
         const heroOpacity = Math.max(0.08, 1 - scrollFraction * 2.2);
         icoMaterial.opacity = 0.35 * heroOpacity;
         nucleusMat.opacity = 0.5 * heroOpacity;
@@ -473,7 +484,7 @@
     // --- 3D TILT EFFECT ON CARDS ---
     function initCardTilt() {
         const tiltCards = document.querySelectorAll(
-            '.stat-card, .skill-category, .timeline-item, .education-card, .project-card, .lang-card, .about-image-card, .contact-card'
+            '.hero-showcase-card, .stat-card, .skill-category, .timeline-item, .education-card, .project-card, .lang-card, .about-image-card, .contact-card'
         );
 
         tiltCards.forEach(card => {

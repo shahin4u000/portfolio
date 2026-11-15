@@ -298,70 +298,39 @@
             66% { transform: translate(-20px, 20px) scale(0.95); }
         }
 
-        .hero-content {
-            text-align: center;
+        .hero-container {
+            width: 100%;
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            align-items: center;
+            gap: 60px;
             position: relative;
             z-index: 2;
-            max-width: 900px;
         }
 
-        .hero-profile {
-            width: 160px; height: 160px;
-            border-radius: 50%;
-            margin: 0 auto 30px;
-            position: relative;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .hero-profile::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: var(--gradient-1);
-            z-index: -1;
-            animation: spin 6s linear infinite;
-        }
-
-        .hero-profile::after {
-            content: '';
-            position: absolute;
-            inset: -12px;
-            border-radius: 50%;
-            background: var(--gradient-1);
-            z-index: -2;
-            opacity: 0.3;
-            filter: blur(15px);
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .hero-profile img {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--bg-primary);
-            display: block;
+        .hero-left {
+            text-align: left;
         }
 
         .hero-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 20px;
+            padding: 8px 18px;
             border-radius: 50px;
-            background: rgba(127, 90, 240, 0.06);
+            background: rgba(127, 90, 240, 0.08);
             backdrop-filter: blur(12px) saturate(150%);
             -webkit-backdrop-filter: blur(12px) saturate(150%);
-            border: 1px solid rgba(127, 90, 240, 0.12);
+            border: 1px solid rgba(127, 90, 240, 0.2);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             font-size: 0.8rem;
             font-weight: 600;
             color: var(--accent-light);
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
             animation: fadeInUp 0.8s ease-out 0.1s both;
             transition: var(--transition);
         }
@@ -370,6 +339,7 @@
             width: 8px; height: 8px;
             border-radius: 50%;
             background: var(--green);
+            box-shadow: 0 0 10px var(--green);
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -380,10 +350,10 @@
 
         .hero-name {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(3rem, 8vw, 6.5rem);
+            font-size: clamp(2.8rem, 5.5vw, 5.2rem);
             font-weight: 800;
-            line-height: 1.05;
-            margin-bottom: 10px;
+            line-height: 1.08;
+            margin-bottom: 14px;
             animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
@@ -395,38 +365,250 @@
             background-clip: text;
         }
 
-        .hero-name .last { display: block; }
+        .hero-name .last { display: block; color: var(--text-primary); }
 
         .hero-title {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            font-size: clamp(1rem, 2vw, 1.25rem);
             color: var(--text-secondary);
-            font-weight: 400;
-            margin-bottom: 16px;
-            letter-spacing: 3px;
+            font-weight: 500;
+            margin-bottom: 18px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             animation: fadeInUp 0.8s ease-out 0.3s both;
         }
 
-        .hero-location {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 40px;
+        .hero-bio {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            margin-bottom: 24px;
+            max-width: 540px;
+            animation: fadeInUp 0.8s ease-out 0.35s both;
+        }
+
+        .hero-bio strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .hero-tech-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 32px;
             animation: fadeInUp 0.8s ease-out 0.4s both;
         }
 
-        .hero-location svg {
-            width: 16px; height: 16px;
-            vertical-align: middle;
-            margin-right: 4px;
-            fill: var(--accent-light);
+        .hero-chip {
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-secondary);
+            backdrop-filter: blur(8px);
+            transition: var(--transition);
+        }
+
+        .hero-chip:hover {
+            background: rgba(127, 90, 240, 0.15);
+            border-color: var(--accent-light);
+            color: #fff;
+            transform: translateY(-2px);
         }
 
         .hero-cta {
             display: flex;
-            gap: 16px;
-            justify-content: center;
+            gap: 14px;
+            justify-content: flex-start;
             flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.45s both;
+        }
+
+        .hero-quick-stats {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            margin-top: 36px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+
+        .quick-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .qs-num {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .qs-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 3px;
+        }
+
+        .quick-stat-sep {
+            width: 1px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* 3D PROFILE SHOWCASE CARD (RIGHT SIDE) */
+        .hero-right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out 0.25s both;
+        }
+
+        .hero-visual-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 390px;
+            perspective: 1000px;
+        }
+
+        .hero-showcase-card {
+            position: relative;
+            border-radius: 28px;
+            background: rgba(22, 22, 26, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(127, 90, 240, 0.15);
+            padding: 16px;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        .hero-showcase-card:hover {
+            box-shadow: 0 35px 80px rgba(0, 0, 0, 0.6), 0 0 50px rgba(127, 90, 240, 0.25);
+            border-color: rgba(127, 90, 240, 0.35);
+        }
+
+        .showcase-glow-backdrop {
+            position: absolute;
+            inset: -20px;
+            border-radius: 36px;
+            background: radial-gradient(circle at 50% 50%, rgba(127, 90, 240, 0.35), rgba(44, 182, 125, 0.2), transparent 70%);
+            filter: blur(35px);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulse 4s ease-in-out infinite alternate;
+        }
+
+        .showcase-image-frame {
+            position: relative;
+            width: 100%;
+            height: 430px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #0d0d10;
+        }
+
+        .showcase-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 15%;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: block;
+        }
+
+        .hero-showcase-card:hover .showcase-img {
+            transform: scale(1.04);
+        }
+
+        .showcase-status-badge {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            border-radius: 50px;
+            background: rgba(10, 10, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .status-pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .floating-hud-badge {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            border-radius: 16px;
+            background: rgba(17, 17, 19, 0.88);
+            border: 1px solid rgba(127, 90, 240, 0.35);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+            z-index: 10;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .floating-hud-badge:hover {
+            transform: translateY(-4px) scale(1.03);
+            border-color: var(--accent-light);
+        }
+
+        .fhb-top {
+            top: -20px;
+            right: -24px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .fhb-bottom {
+            bottom: -20px;
+            left: -24px;
+            animation: float 6s ease-in-out infinite -3s;
+        }
+
+        .fhb-icon {
+            font-size: 1.35rem;
+        }
+
+        .fhb-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .fhb-sub {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
         }
 
         .btn {
@@ -1391,6 +1573,23 @@
         /* ============================================
            RESPONSIVE
            ============================================ */
+        @media (max-width: 968px) {
+            .hero { padding: 110px 24px 60px; }
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                text-align: center;
+            }
+            .hero-left { text-align: center; }
+            .hero-bio { margin-left: auto; margin-right: auto; }
+            .hero-tech-chips { justify-content: center; }
+            .hero-cta { justify-content: center; }
+            .hero-quick-stats { justify-content: center; }
+            .showcase-image-frame { height: 360px; }
+            .fhb-top { right: -6px; top: -14px; }
+            .fhb-bottom { left: -6px; bottom: -14px; }
+        }
+
         @media (max-width: 768px) {
             .nav { padding: 16px 20px; }
 
@@ -1565,37 +1764,94 @@
         <div class="hero-orb hero-orb-2"></div>
         <div class="hero-orb hero-orb-3"></div>
 
-        <div class="hero-content">
-            <div class="hero-profile">
-                <img src="profile.jpg" alt="Kazi Ataul Goni" />
+        <div class="hero-container">
+            <!-- LEFT COLUMN: Content, Bio, Tech Stack, CTAs -->
+            <div class="hero-left">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    Available for opportunities
+                </div>
+
+                <h1 class="hero-name">
+                    <span class="first">Kazi Ataul</span>
+                    <span class="last">Goni</span>
+                </h1>
+
+                <p class="hero-title">Senior Frontend Developer & Angular Expert</p>
+
+                <p class="hero-bio">
+                    Crafting scalable, high-performance web applications and immersive digital experiences in <strong>Hamburg, Germany</strong>. Specialized in Angular (6–21), TypeScript, RxJS, and Three.js 3D.
+                </p>
+
+                <div class="hero-tech-chips">
+                    <span class="hero-chip">⚡ Angular 6–21</span>
+                    <span class="hero-chip">TypeScript</span>
+                    <span class="hero-chip">RxJS / NgRx</span>
+                    <span class="hero-chip">Three.js 3D</span>
+                    <span class="hero-chip">Scalable Architecture</span>
+                </div>
+
+                <div class="hero-cta">
+                    <a href="#contact" class="btn btn-primary">
+                        Get in Touch
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                    <a href="#experience" class="btn btn-secondary">View Work</a>
+                    <button type="button" class="btn btn-3d" id="btnPulse3D" aria-label="Trigger 3D Pulse" onclick="window.portfolio3D && window.portfolio3D.explode()">
+                        <span class="btn-3d-sparkle">✨</span> 3D Pulse
+                    </button>
+                </div>
+
+                <div class="hero-quick-stats">
+                    <div class="quick-stat">
+                        <span class="qs-num">6+</span>
+                        <span class="qs-label">Years Exp.</span>
+                    </div>
+                    <div class="quick-stat-sep"></div>
+                    <div class="quick-stat">
+                        <span class="qs-num">HaCon / Siemens</span>
+                        <span class="qs-label">Enterprise Frontend</span>
+                    </div>
+                    <div class="quick-stat-sep"></div>
+                    <div class="quick-stat">
+                        <span class="qs-num">10+</span>
+                        <span class="qs-label">Live Projects</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="hero-badge">
-                <span class="dot"></span>
-                Available for opportunities
-            </div>
+            <!-- RIGHT COLUMN: 3D Profile Showcase Card with Framed Image -->
+            <div class="hero-right">
+                <div class="hero-visual-wrapper">
+                    <div class="hero-showcase-card">
+                        <div class="showcase-glow-backdrop"></div>
+                        <div class="showcase-image-frame">
+                            <img src="profile.jpg" alt="Kazi Ataul Goni" class="showcase-img" />
+                            <div class="showcase-status-badge">
+                                <span class="status-pulse-dot"></span>
+                                <span>Based in Hamburg, Germany</span>
+                            </div>
+                        </div>
 
-            <h1 class="hero-name">
-                <span class="first">Kazi Ataul</span>
-                <span class="last">Goni</span>
-            </h1>
+                        <!-- Floating HUD Badge Top Right -->
+                        <div class="floating-hud-badge fhb-top">
+                            <span class="fhb-icon">⚡</span>
+                            <div>
+                                <div class="fhb-title">Senior Frontend Dev</div>
+                                <div class="fhb-sub">HaCon · Siemens Company</div>
+                            </div>
+                        </div>
 
-            <p class="hero-title">Senior Frontend Developer</p>
-
-            <p class="hero-location">
-                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                Hamburg, Germany
-            </p>
-
-            <div class="hero-cta">
-                <a href="#contact" class="btn btn-primary">
-                    Get in Touch
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-                <a href="#experience" class="btn btn-secondary">View My Work</a>
-                <button type="button" class="btn btn-3d" id="btnPulse3D" aria-label="Trigger 3D Pulse" onclick="window.portfolio3D && window.portfolio3D.explode()">
-                    <span class="btn-3d-sparkle">✨</span> 3D Pulse
-                </button>
+                        <!-- Floating HUD Badge Bottom Left -->
+                        <div class="floating-hud-badge fhb-bottom">
+                            <span class="fhb-icon">🚀</span>
+                            <div>
+                                <div class="fhb-title">Angular & Three.js</div>
+                                <div class="fhb-sub">Modern 3D & Web Apps</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
