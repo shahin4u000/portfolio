@@ -479,10 +479,10 @@
     if (!canvas) return;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x03040b, 0.007);
+    scene.fog = new THREE.FogExp2(0x060913, 0.065);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 72);
+    camera.position.set(0, 0, 7.5);
 
     const renderer = new THREE.WebGLRenderer({
         canvas: canvas,
@@ -526,239 +526,293 @@
     let maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
 
     // =========================================================================
-    // THEME 0: REALISTIC HUMAN 3D DEVELOPER ON MASSIVE ALIEN PLANET SURFACE
+    // THEME 0: ISOMETRIC CYBER-GLASS ENGINEERING STAGE (FLAGSHIP SHOWCASE)
     // =========================================================================
     const devThemeGroup = new THREE.Group();
     scene.add(devThemeGroup);
 
-    // 1. Massive Curved Alien Planet Surface at Bottom-Right with Craters & Rocky Terrain
-    const planetGeo = new THREE.SphereGeometry(78, 64, 48);
-    const planetMat = new THREE.MeshStandardMaterial({
-        map: alienPlanetTex,
-        roughness: 0.85,
-        metalness: 0.15,
-        emissive: 0x090518,
-        emissiveIntensity: 0.6
-    });
-    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
-    planetMesh.position.set(2, -84, -6);
-    planetMesh.rotation.set(0.35, 0.45, -0.2);
-    devThemeGroup.add(planetMesh);
+    // 1. Architectural Micro-Grid Floor at y = -2.2 with Cyan/Slate Lines & Fog Dissolve
+    const gridHelper = new THREE.GridHelper(36, 72, 0x38bdf8, 0x1e293b);
+    gridHelper.position.set(0, -2.2, 0);
+    if (gridHelper.material) {
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.14;
+        gridHelper.material.depthWrite = false;
+    }
+    devThemeGroup.add(gridHelper);
 
-    // 2. Electric-Blue Planetary Horizon Glow Arc (Curving across the bottom)
-    const horizonArcGeo = new THREE.TorusGeometry(78.6, 0.65, 16, 120, Math.PI * 0.45);
-    const horizonArcMat = new THREE.MeshBasicMaterial({
-        color: 0x00d5ff,
+    // Floor Target Concentric Rings on the perspective grid
+    const floorRingGeo1 = new THREE.RingGeometry(1.6, 1.62, 64);
+    const floorRingMat1 = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
         transparent: true,
-        opacity: 0.95,
-        blending: THREE.AdditiveBlending
+        opacity: 0.22,
+        side: THREE.DoubleSide,
+        depthWrite: false
     });
-    const horizonArc = new THREE.Mesh(horizonArcGeo, horizonArcMat);
-    horizonArc.position.set(2, -84, -4);
-    horizonArc.rotation.set(0.2, 0.1, Math.PI * 0.28);
-    devThemeGroup.add(horizonArc);
+    const floorRing1 = new THREE.Mesh(floorRingGeo1, floorRingMat1);
+    floorRing1.rotation.x = -Math.PI / 2;
+    floorRing1.position.set(2.6, -2.19, 0);
+    devThemeGroup.add(floorRing1);
 
-    // Secondary Purple Atmospheric Rim along Horizon
-    const horizonPurpleGeo = new THREE.TorusGeometry(79.0, 0.95, 16, 120, Math.PI * 0.5);
-    const horizonPurpleMat = new THREE.MeshBasicMaterial({
-        color: 0x8b35ff,
+    const floorRingGeo2 = new THREE.RingGeometry(2.4, 2.42, 64);
+    const floorRingMat2 = new THREE.MeshBasicMaterial({
+        color: 0x6366f1,
         transparent: true,
-        opacity: 0.55,
-        blending: THREE.AdditiveBlending
+        opacity: 0.16,
+        side: THREE.DoubleSide,
+        depthWrite: false
     });
-    const horizonPurple = new THREE.Mesh(horizonPurpleGeo, horizonPurpleMat);
-    horizonPurple.position.set(2, -84, -5);
-    horizonPurple.rotation.set(0.2, 0.1, Math.PI * 0.25);
-    devThemeGroup.add(horizonPurple);
+    const floorRing2 = new THREE.Mesh(floorRingGeo2, floorRingMat2);
+    floorRing2.rotation.x = -Math.PI / 2;
+    floorRing2.position.set(2.6, -2.19, 0);
+    devThemeGroup.add(floorRing2);
 
-    // Purple Atmospheric Volumetric Haze rising above Horizon
-    const hazeGeo = new THREE.PlaneGeometry(85, 26);
-    const hazeMat = new THREE.MeshBasicMaterial({
-        map: atmosphericHazeTex,
+    // 3D Energy Shockwave Horizontal Ring across grid floor
+    const floorShockwaveGeo = new THREE.RingGeometry(0.2, 0.45, 64);
+    const floorShockwaveMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
         transparent: true,
-        opacity: 0.65,
+        opacity: 0,
+        side: THREE.DoubleSide,
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
-    const hazeMesh = new THREE.Mesh(hazeGeo, hazeMat);
-    hazeMesh.position.set(0, -6, -2);
-    devThemeGroup.add(hazeMesh);
+    const floorShockwaveRing = new THREE.Mesh(floorShockwaveGeo, floorShockwaveMat);
+    floorShockwaveRing.rotation.x = -Math.PI / 2;
+    floorShockwaveRing.position.set(2.6, -2.18, 0);
+    devThemeGroup.add(floorShockwaveRing);
 
-    // 3. Subtle Distant Planet/Moon in Upper Cosmic Sky
-    const moonGeo = new THREE.SphereGeometry(9.5, 32, 32);
-    const moonMat = new THREE.MeshStandardMaterial({
-        map: alienPlanetTex,
-        roughness: 0.9,
-        emissive: 0x160f2a,
-        emissiveIntensity: 0.5,
-        color: 0x3d325a
+    let devBurstProgress = 1.0; // 0 to 1 when bursting
+
+    function triggerDevEnergyBurst() {
+        devBurstProgress = 0.0;
+    }
+
+    // 2. Multi-Tiered Isometric Glass Platform Assembly
+    const stageGroup = new THREE.Group();
+    // Desktop initial position: x = +2.6, y = 0.1, z = 0
+    stageGroup.position.set(2.6, 0.1, 0);
+    stageGroup.rotation.set(0.42, -0.55, 0);
+    devThemeGroup.add(stageGroup);
+
+    // Tier 1: Base Tier - Dark brushed-obsidian beveled slab
+    const baseSlabGeo = new THREE.CylinderGeometry(2.15, 2.35, 0.26, 6);
+    const baseSlabMat = new THREE.MeshPhysicalMaterial({
+        color: 0x0a0f1d,
+        roughness: 0.25,
+        metalness: 0.82,
+        clearcoat: 0.7,
+        clearcoatRoughness: 0.2
     });
-    const moonMesh = new THREE.Mesh(moonGeo, moonMat);
-    moonMesh.position.set(-45, 26, -30);
-    const moonGlowGeo = new THREE.SphereGeometry(9.8, 32, 16);
-    const moonGlowMat = new THREE.MeshBasicMaterial({
-        color: 0xb44dff,
+    const baseSlab = new THREE.Mesh(baseSlabGeo, baseSlabMat);
+    baseSlab.position.y = -0.32;
+
+    const baseEdgesGeo = new THREE.EdgesGeometry(baseSlabGeo);
+    const baseEdgesMat = new THREE.LineBasicMaterial({
+        color: 0x38bdf8,
         transparent: true,
-        opacity: 0.6,
-        blending: THREE.AdditiveBlending,
-        side: THREE.BackSide
+        opacity: 0.75
     });
-    const moonGlow = new THREE.Mesh(moonGlowGeo, moonGlowMat);
-    moonMesh.add(moonGlow);
-    devThemeGroup.add(moonMesh);
+    const baseEdges = new THREE.LineSegments(baseEdgesGeo, baseEdgesMat);
+    baseSlab.add(baseEdges);
+    stageGroup.add(baseSlab);
 
-    // 4. High-Resolution Realistic Human Developer Character (Black hoodie, jeans, sneakers, laptop with Angular Shield)
-    const humanTextureLoader = new THREE.TextureLoader();
-    const humanCharTex = humanTextureLoader.load('assets/developer_human.png');
-    humanCharTex.generateMipmaps = true;
-    humanCharTex.minFilter = THREE.LinearMipmapLinearFilter;
-
-    const humanCharMat = new THREE.MeshBasicMaterial({
-        map: humanCharTex,
+    // Tier 2: Middle Tier - Frosted translucent glass slab
+    const glassSlabGeo = new THREE.CylinderGeometry(1.8, 1.92, 0.14, 6);
+    const glassSlabMat = new THREE.MeshPhysicalMaterial({
+        color: 0x1e293b,
+        transmission: 0.65,
+        opacity: 0.45,
         transparent: true,
-        opacity: 1.0,
-        depthWrite: false,
-        side: THREE.DoubleSide
+        roughness: 0.15,
+        ior: 1.45,
+        reflectivity: 0.75,
+        depthWrite: false
     });
-    const humanCharMesh = new THREE.Mesh(new THREE.PlaneGeometry(36, 36), humanCharMat);
-    humanCharMesh.position.set(0, 1.2, 2);
-    devThemeGroup.add(humanCharMesh);
+    const glassSlab = new THREE.Mesh(glassSlabGeo, glassSlabMat);
+    glassSlab.position.y = 0.02;
 
-    // 5. Glowing Neon Purple & Cyan Light Rings beneath Developer Platform
-    const neonRingGeo1 = new THREE.TorusGeometry(14.8, 0.45, 16, 90);
-    const neonRingMat1 = new THREE.MeshBasicMaterial({
-        color: 0xb44dff,
+    const glassEdgesGeo = new THREE.EdgesGeometry(glassSlabGeo);
+    const glassEdgesMat = new THREE.LineBasicMaterial({
+        color: 0x6366f1,
         transparent: true,
-        opacity: 0.95,
+        opacity: 0.65
+    });
+    const glassEdges = new THREE.LineSegments(glassEdgesGeo, glassEdgesMat);
+    glassSlab.add(glassEdges);
+
+    // Subtle circuit / architecture trace lines on frosted glass surface
+    const traceGeo = new THREE.RingGeometry(0.5, 1.35, 6);
+    const traceMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.32,
         blending: THREE.AdditiveBlending
     });
-    const neonRing1 = new THREE.Mesh(neonRingGeo1, neonRingMat1);
-    neonRing1.rotation.x = Math.PI / 2;
-    neonRing1.position.y = -9.8;
-    devThemeGroup.add(neonRing1);
+    const traceMesh = new THREE.Mesh(traceGeo, traceMat);
+    traceMesh.rotation.x = -Math.PI / 2;
+    traceMesh.position.y = 0.08;
+    glassSlab.add(traceMesh);
+    stageGroup.add(glassSlab);
 
-    const neonRingGeo2 = new THREE.TorusGeometry(12.2, 0.22, 16, 80);
-    const neonRingMat2 = new THREE.MeshBasicMaterial({
-        color: 0x00d5ff,
+    // Tier 3: Top Core Assembly (Reactive Architecture Core)
+    const coreGroup = new THREE.Group();
+    coreGroup.position.y = 1.05;
+
+    // A. Reactive Architecture Core (Crisp wireframe + translucent faceted icosahedron)
+    const coreGeo = new THREE.IcosahedronGeometry(0.72, 0);
+    const coreMat = new THREE.MeshPhysicalMaterial({
+        color: 0x060913,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 0.45,
+        roughness: 0.2,
+        metalness: 0.85,
+        transparent: true,
+        opacity: 0.85
+    });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+
+    const coreEdgesGeo = new THREE.EdgesGeometry(coreGeo);
+    const coreEdgesMat = new THREE.LineBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.95
+    });
+    const coreCage = new THREE.LineSegments(coreEdgesGeo, coreEdgesMat);
+    coreMesh.add(coreCage);
+    coreGroup.add(coreMesh);
+
+    // Inner Luminous Precision Crystal (Octahedron)
+    const stageOctaGeo = new THREE.OctahedronGeometry(0.34, 0);
+    const stageOctaMat = new THREE.MeshBasicMaterial({
+        color: 0x6366f1,
+        wireframe: true,
         transparent: true,
         opacity: 0.85,
         blending: THREE.AdditiveBlending
     });
-    const neonRing2 = new THREE.Mesh(neonRingGeo2, neonRingMat2);
-    neonRing2.rotation.x = Math.PI / 2;
-    neonRing2.position.y = -11.0;
-    devThemeGroup.add(neonRing2);
+    const stageOctaMesh = new THREE.Mesh(stageOctaGeo, stageOctaMat);
+    coreGroup.add(stageOctaMesh);
 
-    // 6. Glowing Purple, Cyan & Blue Orbital Ribbons wrapping around Developer
-    const orbitRibbonGeo1 = new THREE.TorusGeometry(18.5, 0.2, 16, 120);
-    const orbitRibbonMat1 = new THREE.MeshBasicMaterial({
-        color: 0xb44dff,
-        transparent: true,
-        opacity: 0.95,
-        blending: THREE.AdditiveBlending
-    });
-    const orbitRibbon1 = new THREE.Mesh(orbitRibbonGeo1, orbitRibbonMat1);
-    orbitRibbon1.rotation.set(Math.PI / 3.2, Math.PI / 4, 0);
-    devThemeGroup.add(orbitRibbon1);
-
-    const orbitRibbonGeo2 = new THREE.TorusGeometry(20.5, 0.16, 16, 120);
-    const orbitRibbonMat2 = new THREE.MeshBasicMaterial({
-        color: 0x00d5ff,
+    // B. 2 Tilted Thin Orbital Data Rings
+    const orbitRingGeo1 = new THREE.TorusGeometry(1.28, 0.015, 16, 100);
+    const orbitRingMat1 = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
         transparent: true,
         opacity: 0.85,
         blending: THREE.AdditiveBlending
     });
-    const orbitRibbon2 = new THREE.Mesh(orbitRibbonGeo2, orbitRibbonMat2);
-    orbitRibbon2.rotation.set(-Math.PI / 3.0, -Math.PI / 3.5, Math.PI / 5);
-    devThemeGroup.add(orbitRibbon2);
+    const orbitRing1 = new THREE.Mesh(orbitRingGeo1, orbitRingMat1);
+    orbitRing1.rotation.set(0.78, 0.38, 0.2);
+    coreGroup.add(orbitRing1);
 
-    const orbitRibbonGeo3 = new THREE.TorusGeometry(15.8, 0.12, 16, 100);
-    const orbitRibbonMat3 = new THREE.MeshBasicMaterial({
-        color: 0x247bff,
+    const orbitRingGeo2 = new THREE.TorusGeometry(1.54, 0.012, 16, 100);
+    const orbitRingMat2 = new THREE.MeshBasicMaterial({
+        color: 0x6366f1,
         transparent: true,
         opacity: 0.75,
         blending: THREE.AdditiveBlending
     });
-    const orbitRibbon3 = new THREE.Mesh(orbitRibbonGeo3, orbitRibbonMat3);
-    orbitRibbon3.rotation.set(Math.PI / 2.2, -Math.PI / 6, Math.PI / 4);
-    devThemeGroup.add(orbitRibbon3);
+    const orbitRing2 = new THREE.Mesh(orbitRingGeo2, orbitRingMat2);
+    orbitRing2.rotation.set(-0.62, -0.68, 0.46);
+    coreGroup.add(orbitRing2);
 
-    // 7. Floating Technology Cards Orbiting the Developer (Angular Primary + TS + JS + RxJS + Three.js)
-    const techCards = [];
+    // C. 6–8 Glowing Micro-Nodes Connected by Delicate Curved Data Splines
+    const microNodes = [];
+    const nodeCount = 7;
+    const nodeSphGeo = new THREE.SphereGeometry(0.052, 16, 16);
 
-    function createTechCard(texture, size = 4.2) {
-        const cardGeo = new THREE.BoxGeometry(size, size, 0.4);
-        const cardMat = new THREE.MeshBasicMaterial({
-            map: texture,
+    for (let i = 0; i < nodeCount; i++) {
+        const isCyan = i % 2 === 0;
+        const nodeMat = new THREE.MeshBasicMaterial({
+            color: isCyan ? 0x38bdf8 : 0x10b981,
             transparent: true,
-            opacity: 0.96
+            opacity: 0.95
         });
-        const mesh = new THREE.Mesh(cardGeo, cardMat);
-        return mesh;
+        const nodeMesh = new THREE.Mesh(nodeSphGeo, nodeMat);
+        const radius = 1.15 + (i % 3) * 0.18;
+        const speed = 0.5 + (i % 4) * 0.15;
+        const phase = (i / nodeCount) * Math.PI * 2;
+        nodeMesh.userData = { radius, speed, phase, isCyan };
+        coreGroup.add(nodeMesh);
+        microNodes.push(nodeMesh);
+
+        // Curved spline line connecting core center to micro-node
+        const lineGeo = new THREE.BufferGeometry();
+        const lineMat = new THREE.LineBasicMaterial({
+            color: isCyan ? 0x38bdf8 : 0x6366f1,
+            transparent: true,
+            opacity: 0.45,
+            blending: THREE.AdditiveBlending
+        });
+        const lineMesh = new THREE.Line(lineGeo, lineMat);
+        coreGroup.add(lineMesh);
+        nodeMesh.userData.splineLine = lineMesh;
+    }
+    stageGroup.add(coreGroup);
+
+    // 3. Controlled Ambient Particles: ~120 sparse, slow-drifting micro-data motes
+    const motesCount = 120;
+    const motesPositions = new Float32Array(motesCount * 3);
+    const motesColors = new Float32Array(motesCount * 3);
+    const motesData = [];
+
+    const cCyan = new THREE.Color(0x38bdf8);
+    const cIndigo = new THREE.Color(0x6366f1);
+
+    for (let i = 0; i < motesCount; i++) {
+        const x = 2.6 + (Math.random() - 0.5) * 7.5;
+        const y = -2.0 + Math.random() * 6.5;
+        const z = (Math.random() - 0.5) * 6.0;
+        motesPositions[i * 3] = x;
+        motesPositions[i * 3 + 1] = y;
+        motesPositions[i * 3 + 2] = z;
+
+        const mixColor = Math.random() > 0.4 ? cCyan : cIndigo;
+        motesColors[i * 3] = mixColor.r;
+        motesColors[i * 3 + 1] = mixColor.g;
+        motesColors[i * 3 + 2] = mixColor.b;
+
+        motesData.push({
+            speed: 0.003 + Math.random() * 0.005,
+            baseX: x,
+            swayFreq: 0.5 + Math.random() * 1.2,
+            swayAmp: 0.08 + Math.random() * 0.12
+        });
     }
 
-    // 1. Angular Shield Logo Card (PRIMARY AND MOST PROMINENT)
-    const cardAngular = createTechCard(angularLogoTex, 5.8);
-    cardAngular.position.set(-15, 6, 7);
-    cardAngular.userData = { baseY: 6, floatSpeed: 1.4, rotSpeed: 0.005 };
-    devThemeGroup.add(cardAngular);
-    techCards.push(cardAngular);
-
-    // 2. TypeScript Logo Card
-    const cardTS = createTechCard(tsLogoTex, 4.4);
-    cardTS.position.set(15, -2, 8);
-    cardTS.userData = { baseY: -2, floatSpeed: 1.6, rotSpeed: -0.006 };
-    devThemeGroup.add(cardTS);
-    techCards.push(cardTS);
-
-    // 3. Three.js Logo Card
-    const cardThree = createTechCard(threeLogoTex, 4.4);
-    cardThree.position.set(14, 8, 5);
-    cardThree.userData = { baseY: 8, floatSpeed: 1.3, rotSpeed: 0.005 };
-    devThemeGroup.add(cardThree);
-    techCards.push(cardThree);
-
-    // 4. JavaScript Logo Card
-    const cardJS = createTechCard(jsLogoTex, 4.2);
-    cardJS.position.set(15, 3, 9);
-    cardJS.userData = { baseY: 3, floatSpeed: 1.5, rotSpeed: 0.007 };
-    devThemeGroup.add(cardJS);
-    techCards.push(cardJS);
-
-    // 5. RxJS Logo Card (Essential Angular reactive stack!)
-    const cardRxJS = createTechCard(rxjsLogoTex, 4.4);
-    cardRxJS.position.set(-14, -1, 8);
-    cardRxJS.userData = { baseY: -1, floatSpeed: 1.5, rotSpeed: -0.005 };
-    devThemeGroup.add(cardRxJS);
-    techCards.push(cardRxJS);
-
-    // 8. Floating Asteroids & Cosmic Rocks
-    const floatingRocks = [];
-    const rockPieceGeo = new THREE.DodecahedronGeometry(1.6, 0);
-    const rockPieceMat = new THREE.MeshStandardMaterial({
-        color: 0x221a3a,
-        roughness: 0.8,
-        flatShading: true
+    const motesGeo = new THREE.BufferGeometry();
+    motesGeo.setAttribute('position', new THREE.BufferAttribute(motesPositions, 3));
+    motesGeo.setAttribute('color', new THREE.BufferAttribute(motesColors, 3));
+    const motesMat = new THREE.PointsMaterial({
+        size: 0.025,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
     });
+    const motesMesh = new THREE.Points(motesGeo, motesMat);
+    devThemeGroup.add(motesMesh);
 
-    for (let i = 0; i < 12; i++) {
-        const rockPiece = new THREE.Mesh(rockPieceGeo, rockPieceMat);
-        const scale = 0.4 + Math.random() * 0.9;
-        rockPiece.scale.set(scale, scale, scale);
-        const angle = (i / 12) * Math.PI * 2;
-        const dist = 16 + Math.random() * 10;
-        rockPiece.position.set(Math.cos(angle) * dist, -9 + Math.random() * 20, Math.sin(angle) * dist);
-        rockPiece.userData = {
-            rotX: (Math.random() - 0.5) * 0.02,
-            rotY: (Math.random() - 0.5) * 0.02,
-            baseY: rockPiece.position.y,
-            speed: 0.8 + Math.random()
-        };
-        devThemeGroup.add(rockPiece);
-        floatingRocks.push(rockPiece);
-    }
+    // 4. Studio Lighting for Theme 0
+    const devAmbient = new THREE.AmbientLight(0x1e293b, 1.2);
+    devThemeGroup.add(devAmbient);
 
-    // =========================================================================
+    const devKeyLight = new THREE.DirectionalLight(0x38bdf8, 2.2);
+    devKeyLight.position.set(6, 8, 5);
+    devThemeGroup.add(devKeyLight);
+
+    const devFillLight = new THREE.DirectionalLight(0x6366f1, 1.8);
+    devFillLight.position.set(-6, -4, 4);
+    devThemeGroup.add(devFillLight);
+
+    const devPointLight = new THREE.PointLight(0x38bdf8, 1.2, 12);
+    devPointLight.position.set(2.6, 2.5, 2.0);
+    devThemeGroup.add(devPointLight);
+
     // THEME 1: COSMIC CELESTIAL SPHERE (SAMPLE 1)
     // =========================================================================
     const theme1Group = new THREE.Group();
@@ -1017,11 +1071,11 @@
     function getThemeBasePos(index) {
         const isDesktop = window.innerWidth > 968;
         if (index === 0) {
-            // 3D Developer character sits slightly lower for perfect compositional balance
+            // Theme 0: Isometric Cyber-Glass Engineering Stage centered with stageGroup at x = +2.6
             return {
-                x: isDesktop ? 18 : 0,
-                y: isDesktop ? -1 : -6,
-                z: 10
+                x: 0,
+                y: 0,
+                z: 0
             };
         }
         return {
@@ -1042,11 +1096,15 @@
     const THEME_DATA = [
         {
             id: 0,
-            name: '3D Developer Platform',
+            name: 'Cyber Engineering Stage',
             eyebrow: "AVAILABLE FOR OPPORTUNITIES",
             subtitle: "Senior Angular Developer",
-            tagline: "I build modern, scalable, interactive and high-performance web applications using Angular, TypeScript and cutting-edge frontend technologies.",
-            accent: '#8b35ff'
+            tagline: "Bridging creative design and robust frontend engineering at scale — building high-performance enterprise Angular applications in Hamburg.",
+            accent: '#38bdf8',
+            primaryAccent: '#38bdf8',
+            secondaryAccent: '#6366f1',
+            bgPrimary: '#060913',
+            surfaceGlass: 'rgba(11, 18, 36, 0.74)'
         },
         {
             id: 1,
@@ -1089,6 +1147,7 @@
 
     let currentThemeIndex = 0; // Default to the 3D Developer Platform!
     let isAutoMode = false;
+    let isEcoMode = false;
 
     function applyTheme(index, isManual = false) {
         if (index < 0 || index >= themeGroups.length) index = 0;
@@ -1147,7 +1206,7 @@
         const pos = camera.position.clone().add(dir.multiplyScalar(distance));
 
         const mat = new THREE.MeshBasicMaterial({
-            color: currentThemeIndex === 0 ? 0x8b35ff : (currentThemeIndex === 2 ? 0x00d2ff : 0xb44dff),
+            color: currentThemeIndex === 0 ? 0x38bdf8 : (currentThemeIndex === 2 ? 0x00d2ff : 0xb44dff),
             transparent: true,
             opacity: 0.9,
             side: THREE.DoubleSide,
@@ -1199,6 +1258,7 @@
     const clock = new THREE.Clock();
 
     function animate() {
+        if (isEcoMode) return;
         requestAnimationFrame(animate);
         if (!isVisible) return;
 
@@ -1212,56 +1272,86 @@
 
         const basePos = getThemeBasePos(currentThemeIndex);
 
-        // 1. ANIMATE THEME 0 (REALISTIC HUMAN 3D DEVELOPER ON MASSIVE ALIEN PLANET SURFACE)
+        // 1. ANIMATE THEME 0 (ISOMETRIC CYBER-GLASS ENGINEERING STAGE)
         if (devThemeGroup.visible) {
             devThemeGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
 
-            // Hide wave mesh so the alien planet surface dominates the lower horizon cleanly
+            const isDesktop = window.innerWidth > 968;
+            const targetPosX = isDesktop ? 2.6 : 0;
+            const targetPosY = isDesktop ? 0.1 : -0.6;
+            const targetPosZ = isDesktop ? 0 : -1.5;
+            const targetScale = isDesktop ? 1.0 : 0.72;
+
+            stageGroup.position.x = THREE.MathUtils.lerp(stageGroup.position.x, targetPosX, 0.08);
+            stageGroup.position.y = THREE.MathUtils.lerp(stageGroup.position.y, targetPosY, 0.08);
+            stageGroup.position.z = THREE.MathUtils.lerp(stageGroup.position.z, targetPosZ, 0.08);
+            stageGroup.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.08);
+
+            // Harmonic levitation with layered phase offset
+            baseSlab.position.y = -0.32 + Math.sin(elapsedTime * 1.1) * 0.04;
+            glassSlab.position.y = 0.02 + Math.sin(elapsedTime * 1.1 + 0.3) * 0.06;
+            coreGroup.position.y = 1.05 + Math.sin(elapsedTime * 1.1 + 0.6) * 0.09;
+
+            // Core rotations
+            coreMesh.rotation.y = elapsedTime * 0.35;
+            coreMesh.rotation.x = elapsedTime * 0.15;
+            stageOctaMesh.rotation.y = -elapsedTime * 0.52;
+
+            orbitRing1.rotation.z = elapsedTime * 0.40;
+            orbitRing2.rotation.z = -elapsedTime * 0.32;
+
+            // Micro-nodes orbit & curved splines update
+            const corePos = new THREE.Vector3(0, 0, 0);
+            microNodes.forEach((node) => {
+                const angle = elapsedTime * node.userData.speed + node.userData.phase;
+                const r = node.userData.radius;
+                const ny = Math.sin(angle * 1.6) * 0.38;
+                const nx = Math.cos(angle) * r;
+                const nz = Math.sin(angle) * r;
+                node.position.set(nx, ny, nz);
+
+                if (node.userData.splineLine) {
+                    const midPoint = new THREE.Vector3(nx * 0.5, ny * 0.5 + 0.12, nz * 0.5);
+                    const curve = new THREE.QuadraticBezierCurve3(corePos, midPoint, node.position);
+                    const pts = curve.getPoints(12);
+                    node.userData.splineLine.geometry.setFromPoints(pts);
+                }
+            });
+
+            // Micro-data motes slow upward drift & subtle sway
+            const positions = motesGeo.attributes.position.array;
+            for (let i = 0; i < motesCount; i++) {
+                const m = motesData[i];
+                positions[i * 3 + 1] += m.speed;
+                positions[i * 3] = m.baseX + Math.sin(elapsedTime * m.swayFreq) * m.swayAmp;
+                if (positions[i * 3 + 1] > 4.5) {
+                    positions[i * 3 + 1] = -2.0;
+                }
+            }
+            motesGeo.attributes.position.needsUpdate = true;
+
+            // Precision mouse parallax (lerp 0.05)
+            stageGroup.rotation.y = THREE.MathUtils.lerp(stageGroup.rotation.y, -0.55 + mouse.x * 0.25, 0.05);
+            stageGroup.rotation.x = THREE.MathUtils.lerp(stageGroup.rotation.x, 0.42 - mouse.y * 0.18, 0.05);
+
             if (waveMesh) waveMesh.visible = false;
 
-            // Massive Alien Planet subtle cosmic rotation & terrain drift
-            planetMesh.rotation.y = elapsedTime * 0.02;
+            // Scroll parallax
+            devThemeGroup.position.y = -scrollFraction * 4.0;
+            devThemeGroup.position.z = -scrollFraction * 6.0;
 
-            // Electric-Blue Planetary Horizon subtle breathing aura
-            horizonArc.rotation.z = Math.PI * 0.28 + Math.sin(elapsedTime * 0.4) * 0.006;
-            horizonPurple.rotation.z = Math.PI * 0.25 - Math.sin(elapsedTime * 0.35) * 0.006;
-
-            // Subtle Distant Planet slow rotation
-            moonMesh.rotation.y = elapsedTime * 0.03;
-
-            // Realistic Human developer natural breathing & floating bob
-            humanCharMesh.position.y = 1.2 + Math.sin(elapsedTime * 1.3) * 0.5;
-            humanCharMesh.scale.y = 1 + Math.sin(elapsedTime * 1.3) * 0.008;
-
-            // Rotating neon rings under rock platform
-            neonRing1.rotation.z = elapsedTime * 0.45;
-            neonRing2.rotation.z = -elapsedTime * 0.35;
-
-            // Glowing purple & cyan orbital ribbons wrapping developer
-            orbitRibbon1.rotation.z = elapsedTime * 0.22;
-            orbitRibbon2.rotation.z = -elapsedTime * 0.18;
-            orbitRibbon3.rotation.z = elapsedTime * 0.14;
-
-            // Floating technology cards orbiting & bobbing (Angular, TS, Three.js, JS, RxJS)
-            techCards.forEach((card, idx) => {
-                card.position.y = card.userData.baseY + Math.sin(elapsedTime * card.userData.floatSpeed + idx * 1.2) * 0.85;
-                card.rotation.y = Math.sin(elapsedTime * 0.8 + idx) * 0.15;
-            });
-
-            // Tumbling cosmic asteroids & crystal rocks
-            floatingRocks.forEach((rock, idx) => {
-                rock.rotation.x += rock.userData.rotX;
-                rock.rotation.y += rock.userData.rotY;
-                rock.position.y = rock.userData.baseY + Math.sin(elapsedTime * rock.userData.speed + idx) * 1.2;
-            });
-
-            // Cinematic parallax mouse tilt
-            devThemeGroup.rotation.y = mouse.x * 0.35;
-            devThemeGroup.rotation.x = -mouse.y * 0.22;
-
-            devThemeGroup.position.x = basePos.x;
-            devThemeGroup.position.y = basePos.y - scrollFraction * 15;
-            devThemeGroup.position.z = basePos.z - scrollFraction * 20;
+            // 3D Energy Shockwave expansion
+            if (devBurstProgress < 1.0) {
+                devBurstProgress += 0.028;
+                const shockRadius = 1 + devBurstProgress * 22;
+                floorShockwaveRing.scale.set(shockRadius, shockRadius, 1);
+                floorShockwaveMat.opacity = Math.max(0, (1 - devBurstProgress) * 0.88);
+                coreMat.emissiveIntensity = 0.45 + Math.max(0, (1 - devBurstProgress) * 2.2);
+                orbitRingMat1.opacity = 0.85 + Math.max(0, (1 - devBurstProgress) * 0.5);
+                orbitRingMat2.opacity = 0.75 + Math.max(0, (1 - devBurstProgress) * 0.5);
+            } else {
+                floorShockwaveMat.opacity = 0;
+            }
         } else {
             if (waveMesh) waveMesh.visible = true;
         }
@@ -1486,6 +1576,31 @@
         initCardTilt();
     }
 
+    // ECO MODE & REDUCED MOTION MANAGEMENT
+    let animFrameReq = null;
+
+    function toggleEcoMode() {
+        isEcoMode = !isEcoMode;
+        const ecoBtn = document.getElementById('ecoModeToggle');
+        const pillEl = document.getElementById('threeModePill');
+        if (ecoBtn) ecoBtn.classList.toggle('active', isEcoMode);
+        if (pillEl) {
+            const subEl = pillEl.querySelector('.pill-sub');
+            if (subEl) subEl.textContent = isEcoMode ? 'Paused (Eco Mode)' : 'Click for Burst';
+        }
+        if (!isEcoMode) {
+            requestAnimationFrame(animate);
+        } else {
+            renderer.render(scene, camera);
+        }
+    }
+
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        isEcoMode = true;
+        const ecoBtn = document.getElementById('ecoModeToggle');
+        if (ecoBtn) ecoBtn.classList.add('active');
+    }
+
     // Window global API
     window.portfolio3D = {
         switchTheme: function (index) {
@@ -1496,9 +1611,12 @@
             applyTheme(getDateAutoThemeIndex(), false);
         },
         pulse: function () {
+            triggerDevEnergyBurst();
             createShockwave(0, 0);
         },
         explode: function () {
+            triggerDevEnergyBurst();
+            createShockwave(0, 0);
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
                     const rx = (Math.random() - 0.5) * 1.5;
@@ -1506,6 +1624,9 @@
                     createShockwave(rx, ry);
                 }, i * 110);
             }
+        },
+        toggleEcoMode: function () {
+            toggleEcoMode();
         }
     };
 

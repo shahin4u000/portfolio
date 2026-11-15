@@ -8,14 +8,14 @@
     <meta name="keywords" content="Kazi Ataul Goni, Senior Angular Developer, Angular Developer Hamburg, Frontend Engineer Germany, TypeScript, RxJS, NgRx, Three.js, WebGL, Siemens, HaCon">
     <meta name="author" content="Kazi Ataul Goni">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://shahin4u000.github.io/portfolio/">
+    <link rel="canonical" href="https://kaziataulgoni.pages.dev/">
 
     <!-- Open Graph / Social Meta -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://shahin4u000.github.io/portfolio/">
+    <meta property="og:url" content="https://kaziataulgoni.pages.dev/">
     <meta property="og:title" content="Kazi Ataul Goni — Senior Angular Developer | Hamburg, Germany">
     <meta property="og:description" content="Senior Angular Developer with 6+ years of experience building modern, scalable, interactive web experiences with Angular, TypeScript, RxJS & Three.js.">
-    <meta property="og:image" content="https://shahin4u000.github.io/portfolio/profile.jpg">
+    <meta property="og:image" content="https://kaziataulgoni.pages.dev/profile.jpg">
     <meta property="og:site_name" content="Kazi Ataul Goni Portfolio">
 
     <!-- Fonts: Space Grotesk (Headings), Inter (Body), JetBrains Mono (Code) -->
@@ -531,12 +531,15 @@
             content: '⚡ Angular Expert';
             font-size: 0.72rem;
             font-weight: 600;
-            color: var(--angular-red);
-            background: rgba(221, 0, 49, 0.12);
-            border: 1px solid rgba(221, 0, 49, 0.3);
-            padding: 4px 10px;
-            border-radius: 20px;
+            color: #FFE4E6;
+            background: rgba(244, 63, 94, 0.18);
+            border: 1px solid rgba(244, 63, 94, 0.5);
+            padding: 4px 12px;
+            border-radius: 50px;
             letter-spacing: 0.5px;
+            box-shadow: inset 0 0 10px rgba(244, 63, 94, 0.25), 0 0 12px rgba(244, 63, 94, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .hero-tagline {
@@ -611,13 +614,15 @@
             align-items: center;
             gap: 18px;
             padding: 10px 18px;
-            background: rgba(17, 16, 32, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(10, 15, 30, 0.68);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             margin-bottom: 28px;
-            font-size: 0.82rem;
-            color: var(--text-secondary);
+            font-size: 0.85rem;
+            color: #d1d5db;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
         }
 
         .hero-pro-item {
@@ -633,10 +638,12 @@
             align-items: center;
             gap: 20px;
             padding: 12px 20px;
-            background: rgba(17, 16, 32, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(10, 15, 30, 0.68);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 14px;
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
         .quick-stat {
@@ -678,34 +685,184 @@
         .hero-floating-glass-card {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 16px;
-            background: rgba(17, 16, 32, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            gap: 14px;
+            padding: 12px 20px;
+            background: rgba(10, 15, 30, 0.74);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 16px;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             margin-right: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             transition: var(--transition);
         }
 
         .hero-floating-glass-card:hover {
             transform: translateY(-3px);
-            border-color: var(--accent-light);
+            border-color: rgba(56, 189, 248, 0.45);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65), 0 0 20px rgba(56, 189, 248, 0.2);
         }
 
         .mini-profile-pic {
-            width: 36px; height: 36px;
+            width: 44px; height: 44px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--accent);
+            border: 2px solid #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
         }
 
-        .card-info { display: flex; flex-direction: column; }
-        .card-title { font-size: 0.8rem; font-weight: 700; color: #ffffff; }
-        .card-subtitle { font-size: 0.68rem; color: var(--text-secondary); }
+        .card-info { display: flex; flex-direction: column; gap: 3px; }
+        .card-title { font-size: 0.88rem; font-weight: 700; color: #ffffff; letter-spacing: -0.2px; }
+        .card-tech-stack { font-size: 0.72rem; color: #94a3b8; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+        .card-status-line {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .status-dot-emerald {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulseEmerald 2s infinite;
+        }
+
+        @keyframes pulseEmerald {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.85); }
+        }
+
+        /* 3D MODE PILL UPGRADE */
+        .three-mode-pill {
+            position: fixed;
+            bottom: 24px; left: 24px;
+            z-index: 999;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(10, 15, 30, 0.82);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 50px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            font-size: 0.75rem;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            user-select: none;
+        }
+
+        .three-mode-pill:hover {
+            color: #fff;
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.35);
+        }
+
+        .pill-labels {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+            text-align: left;
+        }
+
+        .pill-primary { font-weight: 600; color: #ffffff; font-size: 0.75rem; }
+        .pill-sub { font-size: 0.65rem; color: #38bdf8; letter-spacing: 0.3px; }
+
+        /* ECO MODE TOGGLE */
+        .eco-toggle-btn {
+            position: relative;
+            width: 38px; height: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            padding: 2px;
+            display: flex;
+            align-items: center;
+        }
+
+        .eco-toggle-btn.active {
+            background: #10b981;
+        }
+
+        .eco-toggle-knob {
+            display: block;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .eco-toggle-btn.active .eco-toggle-knob {
+            transform: translateX(18px);
+        }
+
+        /* THEME 0 CYBER GLASS FLAGSHIP PALETTE */
+        body[data-theme="theme-0"] {
+            --bg-primary: #060913;
+            --bg-secondary: #0b1224;
+            --bg-card: rgba(11, 18, 36, 0.74);
+            --bg-card-hover: rgba(15, 23, 42, 0.85);
+            --surface-glass: rgba(11, 18, 36, 0.74);
+            --surface-glass-hover: rgba(15, 23, 42, 0.85);
+            --border-glass: rgba(56, 189, 248, 0.2);
+            --border: rgba(56, 189, 248, 0.15);
+            --border-hover: rgba(56, 189, 248, 0.35);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #38bdf8;
+            --accent-primary: #38bdf8;
+            --accent-secondary: #6366f1;
+            --accent-light: #7dd3fc;
+            --electric-blue: #38bdf8;
+            --cyan: #38bdf8;
+            --violet: #6366f1;
+            --signal-emerald: #10b981;
+            background: radial-gradient(circle at 75% 25%, #0d172e 0%, #060913 70%, #03050a 100%);
+        }
+
+        body[data-theme="theme-0"] .nav {
+            background: rgba(6, 9, 19, 0.75);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+        }
+
+        body[data-theme="theme-0"] .btn-gradient,
+        body[data-theme="theme-0"] .btn-talk {
+            background: linear-gradient(135deg, #0284c7, #4f46e5);
+            color: #ffffff;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 4px 20px rgba(2, 132, 199, 0.35);
+        }
+
+        body[data-theme="theme-0"] .btn-gradient:hover,
+        body[data-theme="theme-0"] .btn-talk:hover {
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.5), 0 8px 30px rgba(79, 70, 229, 0.4);
+            transform: translateY(-2px);
+        }
+
+        body[data-theme="theme-0"] .project-card,
+        body[data-theme="theme-0"] .skill-cat-card,
+        body[data-theme="theme-0"] .timeline-item,
+        body[data-theme="theme-0"] .about-portrait-card,
+        body[data-theme="theme-0"] .contact-info-card,
+        body[data-theme="theme-0"] .contact-form-card {
+            background: rgba(11, 18, 36, 0.74);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
 
         /* HERO BOTTOM BAR */
         .hero-bottom-bar {
@@ -1497,9 +1654,12 @@
 
     <!-- 3D WEBGL BACKGROUND CANVAS -->
     <canvas id="webgl-canvas"></canvas>
-    <div class="three-mode-pill" id="threeModePill" title="Click to trigger 3D energy burst" onclick="window.portfolio3D && window.portfolio3D.explode()">
+    <div class="three-mode-pill" id="threeModePill" role="button" tabindex="0" aria-label="Trigger 3D Energy Burst" title="Click to trigger 3D energy burst" onclick="window.portfolio3D && window.portfolio3D.explode()">
         <span class="three-mode-dot"></span>
-        <span>WebGL 3D Active</span>
+        <div class="pill-labels">
+            <span class="pill-primary">WebGL 3D Active</span>
+            <span class="pill-sub">Click for Burst</span>
+        </div>
     </div>
 
     <div class="cursor-glow" id="cursorGlow"></div>
@@ -1535,15 +1695,15 @@
                         <span style="font-size:0.65rem; color:var(--cyan);">Multi-Theme</span>
                     </div>
 
-                    <button type="button" class="theme-card-opt active" data-theme="0">
+                    <button type="button" class="theme-card-opt active" data-theme="0" aria-label="Theme 1: Cyber Engineering Stage">
                         <div class="theme-thumb thumb-0">🚀</div>
                         <div class="theme-info">
-                            <span class="theme-title">1. 3D Developer Platform</span>
-                            <span class="theme-desc">Featured: Alien Planet & Angular Shield</span>
+                            <span class="theme-title">1. Cyber Engineering Stage</span>
+                            <span class="theme-desc">Isometric Glass Platform & Core</span>
                         </div>
                     </button>
 
-                    <button type="button" class="theme-card-opt" data-theme="1">
+                    <button type="button" class="theme-card-opt" data-theme="1" aria-label="Theme 2: Cosmic Sphere">
                         <div class="theme-thumb thumb-1">🪐</div>
                         <div class="theme-info">
                             <span class="theme-title">2. Cosmic Sphere</span>
@@ -1551,7 +1711,7 @@
                         </div>
                     </button>
 
-                    <button type="button" class="theme-card-opt" data-theme="2">
+                    <button type="button" class="theme-card-opt" data-theme="2" aria-label="Theme 3: Quantum Rings">
                         <div class="theme-thumb thumb-2">💫</div>
                         <div class="theme-info">
                             <span class="theme-title">3. Quantum Rings</span>
@@ -1559,7 +1719,7 @@
                         </div>
                     </button>
 
-                    <button type="button" class="theme-card-opt" data-theme="3">
+                    <button type="button" class="theme-card-opt" data-theme="3" aria-label="Theme 4: Cyber Crystal">
                         <div class="theme-thumb thumb-3">💎</div>
                         <div class="theme-info">
                             <span class="theme-title">4. Cyber Crystal</span>
@@ -1567,7 +1727,7 @@
                         </div>
                     </button>
 
-                    <button type="button" class="theme-card-opt" data-theme="4">
+                    <button type="button" class="theme-card-opt" data-theme="4" aria-label="Theme 5: Stellar Nebula">
                         <div class="theme-thumb thumb-4">🌌</div>
                         <div class="theme-info">
                             <span class="theme-title">5. Stellar Nebula</span>
@@ -1575,13 +1735,22 @@
                         </div>
                     </button>
 
-                    <button type="button" class="theme-card-opt" data-theme="auto">
+                    <button type="button" class="theme-card-opt" data-theme="auto" aria-label="Theme Auto: Date-based">
                         <div class="theme-thumb thumb-auto">⚡</div>
                         <div class="theme-info">
                             <span class="theme-title">Auto (Date-based)</span>
                             <span class="theme-desc">Cycles automatically every day</span>
                         </div>
                     </button>
+
+                    <div class="theme-menu-footer" style="padding: 10px 14px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
+                            <span>🌱</span> Pause 3D / Eco Mode
+                        </span>
+                        <button type="button" id="ecoModeToggle" aria-label="Toggle 3D Eco Mode" class="eco-toggle-btn" onclick="window.portfolio3D && window.portfolio3D.toggleEcoMode()">
+                            <span class="eco-toggle-knob"></span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -1610,7 +1779,7 @@
                 <h2 class="hero-subtitle">Senior Angular Developer</h2>
 
                 <p class="hero-tagline">
-                    I build modern, scalable and high-performance web applications with Angular, TypeScript and cutting-edge frontend technologies. I combine creative design thinking with robust frontend engineering to create meaningful digital experiences.
+                    Bridging creative design and robust frontend engineering at scale — building high-performance enterprise Angular applications in Hamburg.
                 </p>
 
                 <!-- Professional Info Panel -->
@@ -1664,7 +1833,8 @@
                     <img src="profile.jpg" alt="Kazi Ataul Goni" class="mini-profile-pic" />
                     <div class="card-info">
                         <span class="card-title">Kazi Ataul Goni</span>
-                        <span class="card-subtitle">Hamburg, Germany · HaCon / Siemens</span>
+                        <span class="card-tech-stack">Angular 21 · TypeScript · RxJS · Three.js</span>
+                        <span class="card-status-line"><span class="status-dot-emerald"></span>Open to Senior / Architect Opportunities</span>
                     </div>
                 </div>
             </div>
@@ -1784,6 +1954,8 @@
                     </div>
                     <div class="skill-chips">
                         <span class="skill-chip primary-highlight">Angular ★</span>
+                        <span class="skill-chip">TypeScript</span>
+                        <span class="skill-chip">RxJS</span>
                         <span class="skill-chip">HTML & CSS</span>
                         <span class="skill-chip">Bootstrap</span>
                         <span class="skill-chip">Angular Material</span>
@@ -1804,6 +1976,7 @@
                         </div>
                     </div>
                     <div class="skill-chips">
+                        <span class="skill-chip">TypeScript</span>
                         <span class="skill-chip">JavaScript</span>
                         <span class="skill-chip">Python</span>
                         <span class="skill-chip">C++</span>
