@@ -155,7 +155,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            opacity: 0.025;
+            opacity: 0.012;
             z-index: 1;
             pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
@@ -445,17 +445,16 @@
             position: relative;
             padding: 130px 48px 60px;
             overflow: hidden;
-            background: radial-gradient(circle at 75% 40%, rgba(139, 92, 246, 0.12) 0%, transparent 60%);
+            background: transparent;
         }
 
-        .hero-bg-grid {
+        /* SUBTLE LEFT-SIDE RADIAL VIGNETTE FOR RAZOR-SHARP TEXT READABILITY */
+        .hero-vignette {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-            background-size: 80px 80px;
+            background: radial-gradient(circle at 25% 50%, rgba(6, 9, 19, 0.55) 0%, rgba(6, 9, 19, 0.12) 65%, transparent 100%);
             pointer-events: none;
+            z-index: 1;
         }
 
         .hero-container {
@@ -1814,7 +1813,7 @@
 
     <!-- HERO SECTION -->
     <section class="hero" id="hero">
-        <div class="hero-bg-grid"></div>
+        <div class="hero-vignette"></div>
 
         <div class="hero-container">
             <div class="hero-left">
@@ -1931,27 +1930,19 @@
                 <div class="about-text reveal">
                     <div class="section-header" style="margin-bottom: 24px;">
                         <p class="section-label">GET TO KNOW ME</p>
-                        <h2 class="section-title">Engineering Experiences, Not Just Interfaces.</h2>
+                        <h2 class="section-title">Crafting Digital Experiences with Precision</h2>
                     </div>
 
                     <p style="font-size: 1.05rem; color: #fff; margin-bottom: 16px;">
-                        I am a <strong>Senior Angular Developer</strong> based in <strong>Hamburg, Germany</strong>, with over <strong>6 years of professional experience</strong> building scalable, maintainable and enterprise-grade web applications.
+                        I'm a passionate <strong>Senior Frontend Developer</strong> based in <strong>Hamburg, Germany</strong>, with over <strong>6 years of professional experience</strong> building scalable, high-performance web applications.
                     </p>
 
                     <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                        Currently working at <strong>HaCon — A Siemens Company</strong>, I contribute to the development of software solutions supporting transportation infrastructure projects across Germany. My work focuses on building reliable and efficient frontend applications that support complex infrastructure-related workflows and operational requirements.
-                    </p>
-
-                    <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                        I specialize in the Angular ecosystem, TypeScript, RxJS and NgRx, with a strong focus on frontend architecture, reactive programming, state management, performance optimization and developing maintainable enterprise applications.
-                    </p>
-
-                    <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                        I hold a <strong>Master of Science in Control, Microelectronics and Microsystem Engineering from the University of Bremen</strong>. My academic background has strengthened my analytical thinking and problem-solving approach, which I bring into my everyday software engineering work.
+                        Currently working at <strong>HaCon — A Siemens Company</strong>, I specialize in the <strong>Angular ecosystem</strong>, creating enterprise-grade applications that serve thousands of users. I thrive on transforming complex requirements into elegant, user-friendly interfaces.
                     </p>
 
                     <p style="color: var(--text-secondary); margin-bottom: 24px;">
-                        I enjoy solving complex engineering challenges, building intuitive user interfaces and continuously exploring modern frontend technologies.
+                        I'm driven by clean code, modern architecture, and the constant pursuit of better developer experiences.
                     </p>
 
                     <div class="about-stats-grid">

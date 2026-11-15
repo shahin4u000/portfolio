@@ -479,7 +479,7 @@
     if (!canvas) return;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x060913, 0.065);
+    scene.fog = new THREE.FogExp2(0x060913, 0.028);
 
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 0, 7.5);
@@ -492,6 +492,74 @@
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // --- PROCEDURAL STUDIO ENVIRONMENT MAP (PMREM) FOR SPECULAR REFLECTIONS ON CYBER GLASS ---
+    try {
+        const pmremGen = new THREE.PMREMGenerator(renderer);
+        pmremGen.compileEquirectangularShader();
+        const envScene = new THREE.Scene();
+        envScene.background = new THREE.Color(0x060913);
+
+        const stripGeo = new THREE.PlaneGeometry(6, 1.4);
+        const stripCyan = new THREE.Mesh(stripGeo, new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide }));
+        stripCyan.position.set(4, 5, -3);
+        stripCyan.rotation.set(-0.5, 0.4, 0.2);
+        envScene.add(stripCyan);
+
+        const stripIndigo = new THREE.Mesh(stripGeo, new THREE.MeshBasicMaterial({ color: 0x6366f1, side: THREE.DoubleSide }));
+        stripIndigo.position.set(-4, 4, 3);
+        stripIndigo.rotation.set(0.6, -0.5, -0.3);
+        envScene.add(stripIndigo);
+
+        const stripWhite = new THREE.Mesh(new THREE.PlaneGeometry(8, 0.8), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
+        stripWhite.position.set(0, 7, 0);
+        stripWhite.rotation.x = Math.PI / 2;
+        envScene.add(stripWhite);
+
+        const envRenderTarget = pmremGen.fromScene(envScene, 0.04);
+        scene.environment = envRenderTarget.texture;
+        pmremGen.dispose();
+    } catch (e) {
+        console.warn('Environment map generation skipped:', e);
+    }
+
+    // --- PROCEDURAL TEXTURE GENERATORS: BOKEH CIRCULAR PARTICLES & NEBULA VOLUMETRICS ---
+    function createBokehParticleTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 64;
+        canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+        grad.addColorStop(0.25, 'rgba(125, 211, 252, 0.9)');
+        grad.addColorStop(0.55, 'rgba(56, 189, 248, 0.45)');
+        grad.addColorStop(0.85, 'rgba(99, 102, 241, 0.15)');
+        grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 64, 64);
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.needsUpdate = true;
+        return tex;
+    }
+    const bokehParticleTexture = createBokehParticleTexture();
+
+    function createNebulaGlowTexture(colorHex) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+        const grad = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
+        const col = new THREE.Color(colorHex);
+        grad.addColorStop(0, `rgba(${Math.round(col.r*255)}, ${Math.round(col.g*255)}, ${Math.round(col.b*255)}, 1.0)`);
+        grad.addColorStop(0.35, `rgba(${Math.round(col.r*255)}, ${Math.round(col.g*255)}, ${Math.round(col.b*255)}, 0.55)`);
+        grad.addColorStop(0.7, `rgba(${Math.round(col.r*255)}, ${Math.round(col.g*255)}, ${Math.round(col.b*255)}, 0.18)`);
+        grad.addColorStop(1.0, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 256, 256);
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.needsUpdate = true;
+        return tex;
+    }
 
     // LIGHTS
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
@@ -526,27 +594,65 @@
     let maxScroll = Math.max(1, document.body.scrollHeight - window.innerHeight);
 
     // =========================================================================
-    // THEME 0: ISOMETRIC CYBER-GLASS ENGINEERING STAGE (FLAGSHIP SHOWCASE)
+    // THEME 0: ULTRA-RICH LUMINOUS CYBER-GLASS & NEON ENGINEERING STAGE
     // =========================================================================
     const devThemeGroup = new THREE.Group();
     scene.add(devThemeGroup);
 
-    // 1. Architectural Micro-Grid Floor at y = -2.2 with Cyan/Slate Lines & Fog Dissolve
-    const gridHelper = new THREE.GridHelper(36, 72, 0x38bdf8, 0x1e293b);
+    // 1. VOLUMETRIC AURORA / NEBULA GLOW BACKDROP (z = -4 to -7)
+    const nebulaTexCyan = createNebulaGlowTexture(0x38bdf8);
+    const nebulaTexIndigo = createNebulaGlowTexture(0x6366f1);
+    const nebulaTexViolet = createNebulaGlowTexture(0xa855f7);
+
+    const nebulaMat1 = new THREE.MeshBasicMaterial({
+        map: nebulaTexCyan,
+        transparent: true,
+        opacity: 0.16,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    const nebulaPlane1 = new THREE.Mesh(new THREE.PlaneGeometry(17, 17), nebulaMat1);
+    nebulaPlane1.position.set(3.0, 1.2, -5.5);
+    devThemeGroup.add(nebulaPlane1);
+
+    const nebulaMat2 = new THREE.MeshBasicMaterial({
+        map: nebulaTexIndigo,
+        transparent: true,
+        opacity: 0.18,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    const nebulaPlane2 = new THREE.Mesh(new THREE.PlaneGeometry(21, 21), nebulaMat2);
+    nebulaPlane2.position.set(-1.5, 0.5, -6.5);
+    devThemeGroup.add(nebulaPlane2);
+
+    const nebulaMat3 = new THREE.MeshBasicMaterial({
+        map: nebulaTexViolet,
+        transparent: true,
+        opacity: 0.10,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+    const nebulaPlane3 = new THREE.Mesh(new THREE.PlaneGeometry(19, 19), nebulaMat3);
+    nebulaPlane3.position.set(4.2, -1.0, -5.0);
+    devThemeGroup.add(nebulaPlane3);
+
+    // 2. ARCHITECTURAL PERSPECTIVE MICRO-GRID FLOOR at y = -2.2
+    const gridHelper = new THREE.GridHelper(38, 76, 0x38bdf8, 0x1e293b);
     gridHelper.position.set(0, -2.2, 0);
     if (gridHelper.material) {
         gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.14;
+        gridHelper.material.opacity = 0.22;
         gridHelper.material.depthWrite = false;
     }
     devThemeGroup.add(gridHelper);
 
-    // Floor Target Concentric Rings on the perspective grid
-    const floorRingGeo1 = new THREE.RingGeometry(1.6, 1.62, 64);
+    // Concentric Floor Target Rings
+    const floorRingGeo1 = new THREE.RingGeometry(1.6, 1.63, 64);
     const floorRingMat1 = new THREE.MeshBasicMaterial({
         color: 0x38bdf8,
         transparent: true,
-        opacity: 0.22,
+        opacity: 0.35,
         side: THREE.DoubleSide,
         depthWrite: false
     });
@@ -555,11 +661,11 @@
     floorRing1.position.set(2.6, -2.19, 0);
     devThemeGroup.add(floorRing1);
 
-    const floorRingGeo2 = new THREE.RingGeometry(2.4, 2.42, 64);
+    const floorRingGeo2 = new THREE.RingGeometry(2.4, 2.43, 64);
     const floorRingMat2 = new THREE.MeshBasicMaterial({
         color: 0x6366f1,
         transparent: true,
-        opacity: 0.16,
+        opacity: 0.25,
         side: THREE.DoubleSide,
         depthWrite: false
     });
@@ -568,8 +674,8 @@
     floorRing2.position.set(2.6, -2.19, 0);
     devThemeGroup.add(floorRing2);
 
-    // 3D Energy Shockwave Horizontal Ring across grid floor
-    const floorShockwaveGeo = new THREE.RingGeometry(0.2, 0.45, 64);
+    // Expanding Neon Shockwave Ring on Floor (for 3D Energy Burst)
+    const floorShockwaveGeo = new THREE.RingGeometry(0.2, 0.5, 64);
     const floorShockwaveMat = new THREE.MeshBasicMaterial({
         color: 0x38bdf8,
         transparent: true,
@@ -583,72 +689,110 @@
     floorShockwaveRing.position.set(2.6, -2.18, 0);
     devThemeGroup.add(floorShockwaveRing);
 
-    let devBurstProgress = 1.0; // 0 to 1 when bursting
+    let devBurstProgress = 1.0;
+    let burstSpeedMult = 1.0;
+    let burstWaveRadius = 0.0;
 
     function triggerDevEnergyBurst() {
         devBurstProgress = 0.0;
+        burstSpeedMult = 3.6;
+        burstWaveRadius = 0.1;
     }
 
-    // 2. Multi-Tiered Isometric Glass Platform Assembly
+    // 3. MULTI-TIERED ISOMETRIC CYBER-GLASS PLATFORM
     const stageGroup = new THREE.Group();
-    // Desktop initial position: x = +2.6, y = 0.1, z = 0
     stageGroup.position.set(2.6, 0.1, 0);
     stageGroup.rotation.set(0.42, -0.55, 0);
     devThemeGroup.add(stageGroup);
+
+    // Helper: Add Dual-Layer Glowing Edges & Corner Vertex Nodes
+    function setupDualGlowEdges(parentMesh, geometry, color1, color2, radiusNode) {
+        const edgesGeo = new THREE.EdgesGeometry(geometry);
+        // Inner crisp line
+        const innerLine = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({
+            color: color1,
+            transparent: true,
+            opacity: 0.85
+        }));
+        parentMesh.add(innerLine);
+
+        // Outer glowing line (scale 1.018, additive)
+        const outerLine = new THREE.LineSegments(edgesGeo, new THREE.LineBasicMaterial({
+            color: color2 || color1,
+            transparent: true,
+            opacity: 0.45,
+            blending: THREE.AdditiveBlending,
+            linewidth: 2
+        }));
+        outerLine.scale.set(1.018, 1.018, 1.018);
+        parentMesh.add(outerLine);
+
+        // Corner vertex nodes
+        if (radiusNode) {
+            const posAttr = edgesGeo.attributes.position;
+            const uniquePoints = [];
+            for (let i = 0; i < posAttr.count; i++) {
+                const p = new THREE.Vector3(posAttr.getX(i), posAttr.getY(i), posAttr.getZ(i));
+                let found = false;
+                for (const u of uniquePoints) {
+                    if (u.distanceTo(p) < 0.06) { found = true; break; }
+                }
+                if (!found && uniquePoints.length < 14) uniquePoints.push(p);
+            }
+
+            const nodeGeo = new THREE.SphereGeometry(radiusNode, 10, 10);
+            const nodeMat = new THREE.MeshBasicMaterial({
+                color: color1,
+                transparent: true,
+                opacity: 0.95,
+                blending: THREE.AdditiveBlending
+            });
+            uniquePoints.forEach(pt => {
+                const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
+                nodeMesh.position.copy(pt);
+                parentMesh.add(nodeMesh);
+            });
+        }
+    }
 
     // Tier 1: Base Tier - Dark brushed-obsidian beveled slab
     const baseSlabGeo = new THREE.CylinderGeometry(2.15, 2.35, 0.26, 6);
     const baseSlabMat = new THREE.MeshPhysicalMaterial({
         color: 0x0a0f1d,
-        roughness: 0.25,
-        metalness: 0.82,
-        clearcoat: 0.7,
-        clearcoatRoughness: 0.2
+        roughness: 0.22,
+        metalness: 0.88,
+        clearcoat: 0.8,
+        clearcoatRoughness: 0.15
     });
     const baseSlab = new THREE.Mesh(baseSlabGeo, baseSlabMat);
     baseSlab.position.y = -0.32;
-
-    const baseEdgesGeo = new THREE.EdgesGeometry(baseSlabGeo);
-    const baseEdgesMat = new THREE.LineBasicMaterial({
-        color: 0x38bdf8,
-        transparent: true,
-        opacity: 0.75
-    });
-    const baseEdges = new THREE.LineSegments(baseEdgesGeo, baseEdgesMat);
-    baseSlab.add(baseEdges);
+    setupDualGlowEdges(baseSlab, baseSlabGeo, 0x38bdf8, 0x818cf8, 0.045);
     stageGroup.add(baseSlab);
 
-    // Tier 2: Middle Tier - Frosted translucent glass slab
+    // Tier 2: Middle Tier - Frosted translucent glass slab with specular transmission
     const glassSlabGeo = new THREE.CylinderGeometry(1.8, 1.92, 0.14, 6);
     const glassSlabMat = new THREE.MeshPhysicalMaterial({
         color: 0x1e293b,
-        transmission: 0.65,
-        opacity: 0.45,
+        transmission: 0.70,
+        opacity: 0.50,
         transparent: true,
-        roughness: 0.15,
-        ior: 1.45,
-        reflectivity: 0.75,
+        roughness: 0.12,
+        ior: 1.48,
+        reflectivity: 0.85,
+        clearcoat: 0.9,
         depthWrite: false
     });
     const glassSlab = new THREE.Mesh(glassSlabGeo, glassSlabMat);
     glassSlab.position.y = 0.02;
+    setupDualGlowEdges(glassSlab, glassSlabGeo, 0x6366f1, 0x38bdf8, 0.04);
 
-    const glassEdgesGeo = new THREE.EdgesGeometry(glassSlabGeo);
-    const glassEdgesMat = new THREE.LineBasicMaterial({
-        color: 0x6366f1,
-        transparent: true,
-        opacity: 0.65
-    });
-    const glassEdges = new THREE.LineSegments(glassEdgesGeo, glassEdgesMat);
-    glassSlab.add(glassEdges);
-
-    // Subtle circuit / architecture trace lines on frosted glass surface
+    // Circuit/architecture trace lines on frosted glass surface
     const traceGeo = new THREE.RingGeometry(0.5, 1.35, 6);
     const traceMat = new THREE.MeshBasicMaterial({
         color: 0x38bdf8,
         wireframe: true,
         transparent: true,
-        opacity: 0.32,
+        opacity: 0.40,
         blending: THREE.AdditiveBlending
     });
     const traceMesh = new THREE.Mesh(traceGeo, traceMat);
@@ -657,51 +801,68 @@
     glassSlab.add(traceMesh);
     stageGroup.add(glassSlab);
 
-    // Tier 3: Top Core Assembly (Reactive Architecture Core)
+    // Tier 3: Top Core Assembly (Reactive Architecture Core & Gyroscopic Energy Matrix)
     const coreGroup = new THREE.Group();
     coreGroup.position.y = 1.05;
 
-    // A. Reactive Architecture Core (Crisp wireframe + translucent faceted icosahedron)
+    // A. Reactive Architecture Core (Faceted Icosahedron with Dual-Layer Glow)
     const coreGeo = new THREE.IcosahedronGeometry(0.72, 0);
     const coreMat = new THREE.MeshPhysicalMaterial({
         color: 0x060913,
         emissive: 0x38bdf8,
-        emissiveIntensity: 0.45,
-        roughness: 0.2,
-        metalness: 0.85,
+        emissiveIntensity: 0.55,
+        roughness: 0.18,
+        metalness: 0.9,
         transparent: true,
-        opacity: 0.85
+        opacity: 0.85,
+        clearcoat: 1.0
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    setupDualGlowEdges(coreMesh, coreGeo, 0x38bdf8, 0x818cf8, 0.038);
+    coreGroup.add(coreMesh);
 
-    const coreEdgesGeo = new THREE.EdgesGeometry(coreGeo);
-    const coreEdgesMat = new THREE.LineBasicMaterial({
-        color: 0x38bdf8,
+    // B. Inner Energy Core (Pulsing Crystal Octahedron)
+    const innerCrystalGeo = new THREE.OctahedronGeometry(0.36, 0);
+    const innerCrystalMat = new THREE.MeshPhysicalMaterial({
+        color: 0x060913,
+        emissive: 0x6366f1,
+        emissiveIntensity: 1.25,
+        roughness: 0.15,
+        metalness: 0.9,
         transparent: true,
         opacity: 0.95
     });
-    const coreCage = new THREE.LineSegments(coreEdgesGeo, coreEdgesMat);
-    coreMesh.add(coreCage);
-    coreGroup.add(coreMesh);
+    const innerCrystalMesh = new THREE.Mesh(innerCrystalGeo, innerCrystalMat);
+    coreGroup.add(innerCrystalMesh);
 
-    // Inner Luminous Precision Crystal (Octahedron)
-    const stageOctaGeo = new THREE.OctahedronGeometry(0.34, 0);
-    const stageOctaMat = new THREE.MeshBasicMaterial({
-        color: 0x6366f1,
-        wireframe: true,
+    // Counter-Rotating Gyroscopic Rings around inner crystal
+    const gyroRingGeo1 = new THREE.TorusGeometry(0.50, 0.012, 16, 64);
+    const gyroRingMat1 = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.90,
+        blending: THREE.AdditiveBlending
+    });
+    const gyroRing1 = new THREE.Mesh(gyroRingGeo1, gyroRingMat1);
+    coreGroup.add(gyroRing1);
+
+    const gyroRingGeo2 = new THREE.TorusGeometry(0.42, 0.010, 16, 64);
+    const gyroRingMat2 = new THREE.MeshBasicMaterial({
+        color: 0xa855f7,
         transparent: true,
         opacity: 0.85,
         blending: THREE.AdditiveBlending
     });
-    const stageOctaMesh = new THREE.Mesh(stageOctaGeo, stageOctaMat);
-    coreGroup.add(stageOctaMesh);
+    const gyroRing2 = new THREE.Mesh(gyroRingGeo2, gyroRingMat2);
+    gyroRing2.rotation.y = Math.PI / 2;
+    coreGroup.add(gyroRing2);
 
-    // B. 2 Tilted Thin Orbital Data Rings
+    // C. 2 Tilted Thin Orbital Data Rings
     const orbitRingGeo1 = new THREE.TorusGeometry(1.28, 0.015, 16, 100);
     const orbitRingMat1 = new THREE.MeshBasicMaterial({
         color: 0x38bdf8,
         transparent: true,
-        opacity: 0.85,
+        opacity: 0.88,
         blending: THREE.AdditiveBlending
     });
     const orbitRing1 = new THREE.Mesh(orbitRingGeo1, orbitRingMat1);
@@ -712,17 +873,17 @@
     const orbitRingMat2 = new THREE.MeshBasicMaterial({
         color: 0x6366f1,
         transparent: true,
-        opacity: 0.75,
+        opacity: 0.80,
         blending: THREE.AdditiveBlending
     });
     const orbitRing2 = new THREE.Mesh(orbitRingGeo2, orbitRingMat2);
     orbitRing2.rotation.set(-0.62, -0.68, 0.46);
     coreGroup.add(orbitRing2);
 
-    // C. 6–8 Glowing Micro-Nodes Connected by Delicate Curved Data Splines
+    // D. 7 Glowing Micro-Nodes Connected by Delicate Curved Data Splines
     const microNodes = [];
     const nodeCount = 7;
-    const nodeSphGeo = new THREE.SphereGeometry(0.052, 16, 16);
+    const nodeSphGeo = new THREE.SphereGeometry(0.054, 16, 16);
 
     for (let i = 0; i < nodeCount; i++) {
         const isCyan = i % 2 === 0;
@@ -744,75 +905,163 @@
         const lineMat = new THREE.LineBasicMaterial({
             color: isCyan ? 0x38bdf8 : 0x6366f1,
             transparent: true,
-            opacity: 0.45,
+            opacity: 0.50,
             blending: THREE.AdditiveBlending
         });
         const lineMesh = new THREE.Line(lineGeo, lineMat);
         coreGroup.add(lineMesh);
         nodeMesh.userData.splineLine = lineMesh;
     }
+
+    // E. 8 Animated Data Pulse Beams (Light packets travelling along grid & orbit rings)
+    const dataPulsePackets = [];
+    const pulseSphGeo = new THREE.SphereGeometry(0.065, 12, 12);
+    const pulseMatCyan = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending
+    });
+    const pulseMatIndigo = new THREE.MeshBasicMaterial({
+        color: 0x818cf8,
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending
+    });
+
+    // 4 Floor grid packets travelling outwards along grid lines
+    for (let i = 0; i < 4; i++) {
+        const pMesh = new THREE.Mesh(pulseSphGeo, (i % 2 === 0) ? pulseMatCyan : pulseMatIndigo);
+        pMesh.position.set(2.6, -2.18, 0);
+        pMesh.userData = {
+            type: 'grid',
+            angle: (i / 4) * Math.PI * 2,
+            distance: Math.random() * 8.0,
+            speed: 0.05 + Math.random() * 0.035,
+            maxDist: 8.5
+        };
+        devThemeGroup.add(pMesh);
+        dataPulsePackets.push(pMesh);
+    }
+
+    // 4 Orbit packets travelling along tilted rings
+    for (let i = 0; i < 4; i++) {
+        const pMesh = new THREE.Mesh(pulseSphGeo, (i % 2 === 0) ? pulseMatCyan : pulseMatIndigo);
+        pMesh.userData = {
+            type: 'orbit',
+            ringIndex: i % 2,
+            angle: (i / 4) * Math.PI * 2,
+            speed: 1.1 + (i % 2) * 0.5
+        };
+        coreGroup.add(pMesh);
+        dataPulsePackets.push(pMesh);
+    }
     stageGroup.add(coreGroup);
 
-    // 3. Full-Page Ambient Particles: 260 slow-drifting micro-data motes across entire page depth
-    const motesCount = 260;
-    const motesPositions = new Float32Array(motesCount * 3);
-    const motesColors = new Float32Array(motesCount * 3);
-    const motesData = [];
+    // 4. RICH MULTI-LAYERED PARTICLE UNIVERSE (650+ GLOWING BOKEH PARTICLES ACROSS 3 DEPTH LAYERS)
+    const totalParticles = 660;
+    const pPositions = new Float32Array(totalParticles * 3);
+    const pColors = new Float32Array(totalParticles * 3);
+    const pSizes = new Float32Array(totalParticles);
+    const pData = [];
 
+    const cWhite = new THREE.Color(0xffffff);
+    const cPaleCyan = new THREE.Color(0xa5f3fc);
     const cCyan = new THREE.Color(0x38bdf8);
     const cIndigo = new THREE.Color(0x6366f1);
+    const cViolet = new THREE.Color(0xa855f7);
     const cEmerald = new THREE.Color(0x10b981);
 
-    for (let i = 0; i < motesCount; i++) {
-        const x = (Math.random() - 0.5) * 20.0;
-        const y = -3.5 + Math.random() * 9.0;
-        const z = -4.0 + Math.random() * 8.0;
-        motesPositions[i * 3] = x;
-        motesPositions[i * 3 + 1] = y;
-        motesPositions[i * 3 + 2] = z;
+    for (let i = 0; i < totalParticles; i++) {
+        let x, y, z, size, col, speed, swayAmp, swayFreq, parallax;
 
-        const rnd = Math.random();
-        const mixColor = rnd > 0.55 ? cCyan : (rnd > 0.15 ? cIndigo : cEmerald);
-        motesColors[i * 3] = mixColor.r;
-        motesColors[i * 3 + 1] = mixColor.g;
-        motesColors[i * 3 + 2] = mixColor.b;
+        if (i < 360) {
+            // Layer 1: Distant Starlight Dust (360 particles)
+            x = (Math.random() - 0.5) * 26.0;
+            y = -4.0 + Math.random() * 9.5;
+            z = -8.0 + Math.random() * 4.5;
+            size = 0.022 + Math.random() * 0.015;
+            col = Math.random() > 0.4 ? cPaleCyan : (Math.random() > 0.5 ? cWhite : cIndigo);
+            speed = 0.0018 + Math.random() * 0.003;
+            swayAmp = 0.04 + Math.random() * 0.08;
+            swayFreq = 0.3 + Math.random() * 0.8;
+            parallax = 0.05;
+        } else if (i < 590) {
+            // Layer 2: Mid-ground Cyan/Indigo Data Motes (230 particles)
+            x = (Math.random() - 0.5) * 20.0;
+            y = -3.5 + Math.random() * 9.0;
+            z = -3.5 + Math.random() * 4.5;
+            size = 0.052 + Math.random() * 0.028;
+            col = Math.random() > 0.5 ? cCyan : (Math.random() > 0.3 ? cIndigo : cEmerald);
+            speed = 0.003 + Math.random() * 0.005;
+            swayAmp = 0.08 + Math.random() * 0.15;
+            swayFreq = 0.5 + Math.random() * 1.2;
+            parallax = 0.18;
+        } else {
+            // Layer 3: Foreground Soft Bokeh Orbs (70 particles)
+            x = (Math.random() - 0.5) * 15.0;
+            y = -3.0 + Math.random() * 8.0;
+            z = 1.5 + Math.random() * 4.0;
+            size = 0.14 + Math.random() * 0.08;
+            col = Math.random() > 0.5 ? cCyan : cViolet;
+            speed = 0.004 + Math.random() * 0.006;
+            swayAmp = 0.12 + Math.random() * 0.22;
+            swayFreq = 0.4 + Math.random() * 0.9;
+            parallax = 0.35;
+        }
 
-        motesData.push({
-            speed: 0.0025 + Math.random() * 0.005,
+        pPositions[i * 3] = x;
+        pPositions[i * 3 + 1] = y;
+        pPositions[i * 3 + 2] = z;
+
+        pColors[i * 3] = col.r;
+        pColors[i * 3 + 1] = col.g;
+        pColors[i * 3 + 2] = col.b;
+
+        pSizes[i] = size;
+
+        pData.push({
+            speed,
             baseX: x,
-            swayFreq: 0.4 + Math.random() * 1.2,
-            swayAmp: 0.06 + Math.random() * 0.14,
-            parallax: 0.15 + (z + 4.0) * 0.06
+            baseZ: z,
+            swayAmp,
+            swayFreq,
+            parallax,
+            twinklePhase: Math.random() * Math.PI * 2,
+            repelX: 0,
+            repelY: 0
         });
     }
 
-    const motesGeo = new THREE.BufferGeometry();
-    motesGeo.setAttribute('position', new THREE.BufferAttribute(motesPositions, 3));
-    motesGeo.setAttribute('color', new THREE.BufferAttribute(motesColors, 3));
-    const motesMat = new THREE.PointsMaterial({
-        size: 0.025,
+    const universeGeo = new THREE.BufferGeometry();
+    universeGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    universeGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
+
+    const universeMat = new THREE.PointsMaterial({
+        size: 0.045,
+        map: bokehParticleTexture,
         vertexColors: true,
         transparent: true,
-        opacity: 0.75,
+        opacity: 0.88,
         blending: THREE.AdditiveBlending,
         depthWrite: false
     });
-    const motesMesh = new THREE.Points(motesGeo, motesMat);
-    devThemeGroup.add(motesMesh);
+    const universeParticles = new THREE.Points(universeGeo, universeMat);
+    devThemeGroup.add(universeParticles);
 
-    // 4. Studio Lighting for Theme 0
-    const devAmbient = new THREE.AmbientLight(0x1e293b, 1.2);
+    // 5. STUDIO LIGHTING SETUP
+    const devAmbient = new THREE.AmbientLight(0x1e293b, 1.4);
     devThemeGroup.add(devAmbient);
 
-    const devKeyLight = new THREE.DirectionalLight(0x38bdf8, 2.2);
+    const devKeyLight = new THREE.DirectionalLight(0x38bdf8, 2.6);
     devKeyLight.position.set(6, 8, 5);
     devThemeGroup.add(devKeyLight);
 
-    const devFillLight = new THREE.DirectionalLight(0x6366f1, 1.8);
+    const devFillLight = new THREE.DirectionalLight(0x6366f1, 2.0);
     devFillLight.position.set(-6, -4, 4);
     devThemeGroup.add(devFillLight);
 
-    const devPointLight = new THREE.PointLight(0x38bdf8, 1.2, 12);
+    const devPointLight = new THREE.PointLight(0x38bdf8, 1.6, 14);
     devPointLight.position.set(2.6, 2.5, 2.0);
     devThemeGroup.add(devPointLight);
 
@@ -1275,12 +1524,25 @@
 
         const basePos = getThemeBasePos(currentThemeIndex);
 
-        // 1. ANIMATE THEME 0 (ISOMETRIC CYBER-GLASS ENGINEERING STAGE)
+        // 1. ANIMATE THEME 0 (ULTRA-RICH LUMINOUS CYBER-GLASS & NEON SHOWCASE)
         if (devThemeGroup.visible) {
             devThemeGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
 
-            const isDesktop = window.innerWidth > 968;
+            // Volumetric Nebula Glow Planes breathing & soft drift
+            nebulaPlane1.position.x = 3.0 + Math.sin(elapsedTime * 0.35) * 0.45;
+            nebulaPlane1.position.y = 1.2 + Math.cos(elapsedTime * 0.28) * 0.35;
+            nebulaPlane1.material.opacity = 0.16 + Math.sin(elapsedTime * 0.6) * 0.04;
+
+            nebulaPlane2.position.x = -1.5 + Math.cos(elapsedTime * 0.3) * 0.5;
+            nebulaPlane2.position.y = 0.5 + Math.sin(elapsedTime * 0.25) * 0.4;
+            nebulaPlane2.material.opacity = 0.18 + Math.cos(elapsedTime * 0.5) * 0.04;
+
+            nebulaPlane3.position.x = 4.2 + Math.sin(elapsedTime * 0.22) * 0.4;
+            nebulaPlane3.position.y = -1.0 + Math.cos(elapsedTime * 0.32) * 0.3;
+            nebulaPlane3.material.opacity = 0.10 + Math.sin(elapsedTime * 0.45) * 0.025;
+
             // Full-page responsive 3D spatial trajectory across scroll
+            const isDesktop = window.innerWidth > 968;
             const targetPosX = isDesktop ? (2.6 - scrollFraction * 1.4) : 0;
             const targetPosY = isDesktop ? (0.1 + Math.sin(scrollFraction * Math.PI) * 0.45) : -0.5;
             const targetPosZ = isDesktop ? (-scrollFraction * 1.6) : -1.5;
@@ -1296,18 +1558,31 @@
             glassSlab.position.y = 0.02 + Math.sin(elapsedTime * 1.1 + 0.3) * 0.06;
             coreGroup.position.y = 1.05 + Math.sin(elapsedTime * 1.1 + 0.6) * 0.09;
 
-            // Core rotations
-            coreMesh.rotation.y = elapsedTime * 0.35;
-            coreMesh.rotation.x = elapsedTime * 0.15;
-            stageOctaMesh.rotation.y = -elapsedTime * 0.52;
+            // Decay burst speed multiplier smoothly
+            if (burstSpeedMult > 1.0) {
+                burstSpeedMult = THREE.MathUtils.lerp(burstSpeedMult, 1.0, 0.035);
+            }
 
-            orbitRing1.rotation.z = elapsedTime * 0.40;
-            orbitRing2.rotation.z = -elapsedTime * 0.32;
+            // Core rotations with burst acceleration
+            coreMesh.rotation.y = elapsedTime * 0.35 * burstSpeedMult;
+            coreMesh.rotation.x = elapsedTime * 0.15;
+
+            // Inner Crystal pulse & gyroscopic counter-rotation
+            innerCrystalMesh.rotation.y = -elapsedTime * 0.55 * burstSpeedMult;
+            innerCrystalMesh.rotation.z = Math.sin(elapsedTime * 0.8) * 0.15;
+            innerCrystalMat.emissiveIntensity = 1.25 + Math.sin(elapsedTime * 2.2) * 0.4;
+
+            gyroRing1.rotation.x = elapsedTime * 1.2 * burstSpeedMult;
+            gyroRing2.rotation.z = -elapsedTime * 1.4 * burstSpeedMult;
+
+            // Orbital Rings rotation
+            orbitRing1.rotation.z = elapsedTime * 0.40 * burstSpeedMult;
+            orbitRing2.rotation.z = -elapsedTime * 0.32 * burstSpeedMult;
 
             // Micro-nodes orbit & curved splines update
             const corePos = new THREE.Vector3(0, 0, 0);
             microNodes.forEach((node) => {
-                const angle = elapsedTime * node.userData.speed + node.userData.phase;
+                const angle = elapsedTime * node.userData.speed * burstSpeedMult + node.userData.phase;
                 const r = node.userData.radius;
                 const ny = Math.sin(angle * 1.6) * 0.38;
                 const nx = Math.cos(angle) * r;
@@ -1322,17 +1597,77 @@
                 }
             });
 
-            // Micro-data motes slow upward drift, depth parallax & subtle sway
-            const positions = motesGeo.attributes.position.array;
-            for (let i = 0; i < motesCount; i++) {
-                const m = motesData[i];
-                positions[i * 3 + 1] += m.speed;
-                positions[i * 3] = m.baseX + Math.sin(elapsedTime * m.swayFreq) * m.swayAmp + mouse.x * m.parallax;
+            // Animated Data Pulse Beams
+            dataPulsePackets.forEach(pkt => {
+                if (pkt.userData.type === 'grid') {
+                    pkt.userData.distance += pkt.userData.speed * burstSpeedMult;
+                    if (pkt.userData.distance > pkt.userData.maxDist) {
+                        pkt.userData.distance = 0.5;
+                    }
+                    const px = 2.6 + Math.cos(pkt.userData.angle) * pkt.userData.distance;
+                    const pz = Math.sin(pkt.userData.angle) * pkt.userData.distance;
+                    pkt.position.set(px, -2.18, pz);
+                    pkt.material.opacity = (1 - pkt.userData.distance / pkt.userData.maxDist) * 0.95;
+                } else if (pkt.userData.type === 'orbit') {
+                    pkt.userData.angle += pkt.userData.speed * 0.02 * burstSpeedMult;
+                    const rad = pkt.userData.ringIndex === 0 ? 1.28 : 1.54;
+                    const tiltX = pkt.userData.ringIndex === 0 ? 0.78 : -0.62;
+                    const ox = Math.cos(pkt.userData.angle) * rad;
+                    const oz = Math.sin(pkt.userData.angle) * rad;
+                    pkt.position.set(ox, Math.sin(tiltX) * oz, Math.cos(tiltX) * oz);
+                }
+            });
+
+            // 650+ Bokeh Particles Animation with upward drift, cursor repulsion & ripple wave
+            const positions = universeGeo.attributes.position.array;
+            const mouseWorldX = mouse.x * 6.0;
+            const mouseWorldY = -mouse.y * 4.0;
+
+            if (burstWaveRadius > 0 && burstWaveRadius < 18.0) {
+                burstWaveRadius += 0.45;
+            } else {
+                burstWaveRadius = 0;
+            }
+
+            for (let i = 0; i < totalParticles; i++) {
+                const p = pData[i];
+                // Upward drift
+                positions[i * 3 + 1] += p.speed;
+
+                // Sway
+                let curX = p.baseX + Math.sin(elapsedTime * p.swayFreq) * p.swayAmp + mouse.x * p.parallax;
+                let curY = positions[i * 3 + 1];
+                let curZ = positions[i * 3 + 2];
+
+                // Cursor repulsion
+                const dx = curX - mouseWorldX;
+                const dy = curY - mouseWorldY;
+                const distMouse = Math.sqrt(dx * dx + dy * dy);
+                if (distMouse < 2.8) {
+                    const force = (1 - distMouse / 2.8) * 0.08;
+                    p.repelX += (dx / (distMouse + 0.1)) * force;
+                    p.repelY += (dy / (distMouse + 0.1)) * force;
+                }
+                p.repelX *= 0.92;
+                p.repelY *= 0.92;
+
+                // Burst ripple impulse
+                if (burstWaveRadius > 0) {
+                    const distCore = Math.sqrt((curX - 2.6) * (curX - 2.6) + curY * curY);
+                    if (Math.abs(distCore - burstWaveRadius) < 1.4) {
+                        positions[i * 3 + 1] += 0.04;
+                    }
+                }
+
+                positions[i * 3] = curX + p.repelX;
+                positions[i * 3 + 1] = curY + p.repelY;
+
+                // Loop particle when exceeding top
                 if (positions[i * 3 + 1] > 5.5) {
-                    positions[i * 3 + 1] = -3.2;
+                    positions[i * 3 + 1] = -3.5;
                 }
             }
-            motesGeo.attributes.position.needsUpdate = true;
+            universeGeo.attributes.position.needsUpdate = true;
 
             // Precision mouse parallax + subtle scroll pitch
             const scrollPitch = Math.sin(scrollFraction * Math.PI * 2) * 0.10;
@@ -1350,15 +1685,15 @@
             devThemeGroup.position.y = -scrollFraction * 1.5;
             devThemeGroup.position.z = -scrollFraction * 2.0;
 
-            // 3D Energy Shockwave expansion
+            // Enhanced 3D Energy Shockwave expansion
             if (devBurstProgress < 1.0) {
-                devBurstProgress += 0.028;
-                const shockRadius = 1 + devBurstProgress * 22;
+                devBurstProgress += 0.024;
+                const shockRadius = 1 + devBurstProgress * 32;
                 floorShockwaveRing.scale.set(shockRadius, shockRadius, 1);
-                floorShockwaveMat.opacity = Math.max(0, (1 - devBurstProgress) * 0.88);
-                coreMat.emissiveIntensity = 0.45 + Math.max(0, (1 - devBurstProgress) * 2.2);
-                orbitRingMat1.opacity = 0.85 + Math.max(0, (1 - devBurstProgress) * 0.5);
-                orbitRingMat2.opacity = 0.75 + Math.max(0, (1 - devBurstProgress) * 0.5);
+                floorShockwaveMat.opacity = Math.max(0, (1 - devBurstProgress) * 0.95);
+                coreMat.emissiveIntensity = 0.55 + Math.max(0, (1 - devBurstProgress) * 2.8);
+                orbitRingMat1.opacity = 0.88 + Math.max(0, (1 - devBurstProgress) * 0.5);
+                orbitRingMat2.opacity = 0.80 + Math.max(0, (1 - devBurstProgress) * 0.5);
             } else {
                 floorShockwaveMat.opacity = 0;
             }
