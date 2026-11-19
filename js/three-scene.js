@@ -382,6 +382,163 @@
         return texture;
     }
 
+    // HTML5 Logo Texture
+    function createHTML5LogoTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#0f111a';
+        ctx.beginPath();
+        ctx.roundRect(10, 10, 236, 236, 40);
+        ctx.fill();
+
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#e34f26';
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(128, 128);
+        ctx.fillStyle = '#e34f26';
+        ctx.shadowColor = '#f97316';
+        ctx.shadowBlur = 22;
+        ctx.beginPath();
+        ctx.moveTo(-60, -75);
+        ctx.lineTo(60, -75);
+        ctx.lineTo(48, 65);
+        ctx.lineTo(0, 80);
+        ctx.lineTo(-48, 65);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#ef652a';
+        ctx.beginPath();
+        ctx.moveTo(0, -65);
+        ctx.lineTo(48, -65);
+        ctx.lineTo(38, 55);
+        ctx.lineTo(0, 68);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 80px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('5', 0, 4);
+        ctx.restore();
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
+    // CSS3 Logo Texture
+    function createCSS3LogoTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#0f111a';
+        ctx.beginPath();
+        ctx.roundRect(10, 10, 236, 236, 40);
+        ctx.fill();
+
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#1572b6';
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(128, 128);
+        ctx.fillStyle = '#1572b6';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 22;
+        ctx.beginPath();
+        ctx.moveTo(-60, -75);
+        ctx.lineTo(60, -75);
+        ctx.lineTo(48, 65);
+        ctx.lineTo(0, 80);
+        ctx.lineTo(-48, 65);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#33a9dc';
+        ctx.beginPath();
+        ctx.moveTo(0, -65);
+        ctx.lineTo(48, -65);
+        ctx.lineTo(38, 55);
+        ctx.lineTo(0, 68);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 80px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('3', 0, 4);
+        ctx.restore();
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
+    // Docker / DevOps Logo Texture
+    function createDevOpsLogoTexture() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#0f111a';
+        ctx.beginPath();
+        ctx.roundRect(10, 10, 236, 236, 40);
+        ctx.fill();
+
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#2496ed';
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(128, 112);
+        ctx.fillStyle = '#2496ed';
+        ctx.shadowColor = '#06d6e0';
+        ctx.shadowBlur = 20;
+
+        const bSize = 16;
+        const bGap = 4;
+        const startX = -32;
+        ctx.fillRect(startX + bSize + bGap, -40, bSize, bSize);
+        ctx.fillRect(startX + (bSize + bGap) * 2, -40, bSize, bSize);
+        ctx.fillRect(startX, -20, bSize, bSize);
+        ctx.fillRect(startX + bSize + bGap, -20, bSize, bSize);
+        ctx.fillRect(startX + (bSize + bGap) * 2, -20, bSize, bSize);
+
+        ctx.beginPath();
+        ctx.moveTo(-50, 2);
+        ctx.bezierCurveTo(-50, 26, -18, 34, 22, 34);
+        ctx.bezierCurveTo(44, 34, 56, 18, 60, 4);
+        ctx.lineTo(-50, 2);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 24px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('DevOps', 128, 194);
+        ctx.font = '600 15px Inter, sans-serif';
+        ctx.fillStyle = '#06d6e0';
+        ctx.fillText('Docker · CI/CD', 128, 220);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
     // Procedural Alien Planet Surface with Craters & Rocky Terrain
     function createAlienPlanetTexture() {
         const canvas = document.createElement('canvas');
@@ -584,6 +741,9 @@
     const jsLogoTex = createJSLogoTexture();
     const codeBracketsTex = createCodeBracketsTexture();
     const rxjsLogoTex = createRxJSLogoTexture();
+    const html5LogoTex = createHTML5LogoTexture();
+    const css3LogoTex = createCSS3LogoTexture();
+    const devopsLogoTex = createDevOpsLogoTexture();
     const alienPlanetTex = createAlienPlanetTexture();
     const atmosphericHazeTex = createAtmosphericHazeTexture();
 
@@ -957,6 +1117,117 @@
         dataPulsePackets.push(pMesh);
     }
     stageGroup.add(coreGroup);
+
+    // -------------------------------------------------------------------------
+    // HOLOGRAPHIC FLOATING 3D TECH BADGES & ORBITING GLASS CUBES (CONCEPT 1)
+    // Technologies: Angular, TypeScript, JavaScript, HTML5, CSS3, Docker/DevOps, RxJS, Three.js
+    // -------------------------------------------------------------------------
+    const techBadgesGroup = new THREE.Group();
+    stageGroup.add(techBadgesGroup);
+
+    const techConfigs = [
+        { name: 'Angular', texture: angularLogoTex, color: 0xdd0031, glow: 0xf43f5e, radius: 2.38, height: 0.85, speed: 0.32, phase: 0.0 },
+        { name: 'TypeScript', texture: tsLogoTex, color: 0x3178c6, glow: 0x38bdf8, radius: 2.68, height: 1.45, speed: 0.28, phase: 0.78 },
+        { name: 'JavaScript', texture: jsLogoTex, color: 0xf7df1e, glow: 0xfbbf24, radius: 2.28, height: 0.25, speed: 0.35, phase: 1.57 },
+        { name: 'RxJS', texture: rxjsLogoTex, color: 0xd80064, glow: 0xf43f5e, radius: 2.78, height: 1.65, speed: 0.26, phase: 2.35 },
+        { name: 'HTML5', texture: html5LogoTex, color: 0xe34f26, glow: 0xf97316, radius: 2.48, height: 0.38, speed: 0.30, phase: 3.14 },
+        { name: 'CSS3', texture: css3LogoTex, color: 0x1572b6, glow: 0x38bdf8, radius: 2.72, height: 1.15, speed: 0.29, phase: 3.92 },
+        { name: 'DevOps', texture: devopsLogoTex, color: 0x2496ed, glow: 0x06d6e0, radius: 2.88, height: 0.12, speed: 0.27, phase: 4.71 },
+        { name: 'Three.js', texture: threeLogoTex, color: 0x00d5ff, glow: 0x38bdf8, radius: 2.52, height: 1.82, speed: 0.31, phase: 5.49 }
+    ];
+
+    const floatingTechBadges = [];
+    const techBadgeBoxGeo = new THREE.BoxGeometry(0.58, 0.58, 0.10);
+
+    techConfigs.forEach((tech) => {
+        const badgeGroup = new THREE.Group();
+
+        // 6-sided materials: front face (index 4) has tech logo, other 5 faces have frosted dark cyber-glass
+        const glassSideMat = new THREE.MeshPhysicalMaterial({
+            color: 0x080d1a,
+            roughness: 0.14,
+            metalness: 0.88,
+            transmission: 0.65,
+            transparent: true,
+            opacity: 0.90,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0.12
+        });
+
+        const logoFrontMat = new THREE.MeshStandardMaterial({
+            map: tech.texture,
+            roughness: 0.15,
+            metalness: 0.35,
+            emissive: tech.color,
+            emissiveIntensity: 0.35,
+            transparent: true
+        });
+
+        // BoxGeometry face order: [px, nx, py, ny, pz, nz]. pz (index 4) is facing +Z
+        const boxMats = [glassSideMat, glassSideMat, glassSideMat, glassSideMat, logoFrontMat, glassSideMat];
+        const badgeBoxMesh = new THREE.Mesh(techBadgeBoxGeo, boxMats);
+        badgeGroup.add(badgeBoxMesh);
+
+        // Dual Glowing Neon Edges
+        setupDualGlowEdges(badgeBoxMesh, techBadgeBoxGeo, tech.glow, tech.color, 0.026);
+
+        // Soft halo sprite glow
+        const haloSpriteMat = new THREE.SpriteMaterial({
+            map: particleTexture,
+            color: tech.glow,
+            transparent: true,
+            opacity: 0.42,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+        const haloSprite = new THREE.Sprite(haloSpriteMat);
+        haloSprite.scale.set(1.15, 1.15, 1.0);
+        haloSprite.position.set(0, 0, -0.05);
+        badgeGroup.add(haloSprite);
+
+        // Core-to-Badge Laser Connection Line
+        const laserGeo = new THREE.BufferGeometry();
+        const laserPos = new Float32Array(6);
+        laserGeo.setAttribute('position', new THREE.BufferAttribute(laserPos, 3));
+        const laserMat = new THREE.LineBasicMaterial({
+            color: tech.glow,
+            transparent: true,
+            opacity: 0.32,
+            blending: THREE.AdditiveBlending
+        });
+        const laserMesh = new THREE.Line(laserGeo, laserMat);
+        devThemeGroup.add(laserMesh);
+
+        badgeGroup.userData = {
+            config: tech,
+            laserMesh: laserMesh,
+            currentAngle: tech.phase,
+            baseHeight: tech.height,
+            baseRadius: tech.radius,
+            burstOffset: 0
+        };
+
+        techBadgesGroup.add(badgeGroup);
+        floatingTechBadges.push(badgeGroup);
+    });
+
+    // Inter-badge polygon mesh lines (connecting badge i to i+1 for a cybernetic ring network)
+    const interBadgeLines = [];
+    for (let i = 0; i < techConfigs.length; i++) {
+        const nextIdx = (i + 1) % techConfigs.length;
+        const ringLineGeo = new THREE.BufferGeometry();
+        const ringLinePos = new Float32Array(6);
+        ringLineGeo.setAttribute('position', new THREE.BufferAttribute(ringLinePos, 3));
+        const ringLineMat = new THREE.LineBasicMaterial({
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0.20,
+            blending: THREE.AdditiveBlending
+        });
+        const ringLineMesh = new THREE.Line(ringLineGeo, ringLineMat);
+        devThemeGroup.add(ringLineMesh);
+        interBadgeLines.push({ mesh: ringLineMesh, idxA: i, idxB: nextIdx });
+    }
 
     // 4. RICH MULTI-LAYERED PARTICLE UNIVERSE (650+ GLOWING BOKEH PARTICLES ACROSS 3 DEPTH LAYERS)
     const totalParticles = 660;
@@ -1413,6 +1684,17 @@
             }
         });
 
+        if (typeof floatingTechBadges !== 'undefined' && floatingTechBadges) {
+            floatingTechBadges.forEach(b => {
+                if (b.userData.laserMesh) b.userData.laserMesh.visible = (index === 0);
+            });
+        }
+        if (typeof interBadgeLines !== 'undefined' && interBadgeLines) {
+            interBadgeLines.forEach(item => {
+                if (item.mesh) item.mesh.visible = (index === 0);
+            });
+        }
+
         const data = THEME_DATA[index];
         const eyebrowEl = document.getElementById('heroEyebrow');
         if (eyebrowEl) eyebrowEl.textContent = data.eyebrow;
@@ -1471,6 +1753,127 @@
         scene.add(shockwave);
         shockwaves.push(shockwave);
     }
+
+    // -------------------------------------------------------------------------
+    // 360° INTERACTIVE STAGE ROTATION CONTROLLER (MOUSE DRAG / HOVER & TOUCH)
+    // -------------------------------------------------------------------------
+    let isDraggingStage = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let manualRotY = 0;
+    let manualRotX = 0;
+    let targetManualRotY = 0;
+    let targetManualRotX = 0;
+    let stageInertiaY = 0;
+    let stageInertiaX = 0;
+    let isInteractingWithStage = false;
+    let stageReturnTimer = null;
+
+    function notifyStageInteraction() {
+        isInteractingWithStage = true;
+        const hintEl = document.getElementById('stage360Hint');
+        if (hintEl) hintEl.style.opacity = '0.2';
+        clearTimeout(stageReturnTimer);
+    }
+
+    function scheduleStageReturn(delay = 1400) {
+        clearTimeout(stageReturnTimer);
+        stageReturnTimer = setTimeout(() => {
+            isInteractingWithStage = false;
+            const hintEl = document.getElementById('stage360Hint');
+            if (hintEl) hintEl.style.opacity = '0.85';
+        }, delay);
+    }
+
+    const hero3DZone = document.getElementById('hero3DZone');
+    if (hero3DZone) {
+        // Desktop mouse drag & hover
+        hero3DZone.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button, a, input, select')) return;
+            isDraggingStage = true;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            stageInertiaY = 0;
+            stageInertiaX = 0;
+            notifyStageInteraction();
+            document.body.style.cursor = 'grabbing';
+            hero3DZone.style.cursor = 'grabbing';
+        });
+
+        hero3DZone.addEventListener('mousemove', (e) => {
+            if (!isDraggingStage) {
+                // Interactive hover rotation over 3D model
+                const rect = hero3DZone.getBoundingClientRect();
+                const relX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                const relY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+                targetManualRotY += relX * 0.035;
+                targetManualRotX = Math.max(-0.55, Math.min(0.55, targetManualRotX - relY * 0.02));
+                notifyStageInteraction();
+                scheduleStageReturn(1200);
+            }
+        });
+
+        hero3DZone.addEventListener('mouseleave', () => {
+            if (!isDraggingStage) {
+                scheduleStageReturn(700);
+            }
+        });
+
+        // Mobile touch swipe to rotate 360°
+        hero3DZone.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDraggingStage = true;
+                dragStartX = e.touches[0].clientX;
+                dragStartY = e.touches[0].clientY;
+                stageInertiaY = 0;
+                stageInertiaX = 0;
+                notifyStageInteraction();
+            }
+        }, { passive: true });
+
+        hero3DZone.addEventListener('touchmove', (e) => {
+            if (isDraggingStage && e.touches.length === 1) {
+                const deltaX = e.touches[0].clientX - dragStartX;
+                const deltaY = e.touches[0].clientY - dragStartY;
+                targetManualRotY += deltaX * 0.012; // Free 360° rotation
+                targetManualRotX = Math.max(-0.65, Math.min(0.65, targetManualRotX + deltaY * 0.008));
+                stageInertiaY = deltaX * 0.012;
+                stageInertiaX = deltaY * 0.008;
+                dragStartX = e.touches[0].clientX;
+                dragStartY = e.touches[0].clientY;
+                notifyStageInteraction();
+            }
+        }, { passive: true });
+
+        hero3DZone.addEventListener('touchend', () => {
+            isDraggingStage = false;
+            scheduleStageReturn(1500);
+        }, { passive: true });
+    }
+
+    // Global drag tracking so fast drags don't stutter outside container
+    window.addEventListener('mousemove', (e) => {
+        if (isDraggingStage) {
+            const deltaX = e.clientX - dragStartX;
+            const deltaY = e.clientY - dragStartY;
+            targetManualRotY += deltaX * 0.011; // 360° rotation
+            targetManualRotX = Math.max(-0.65, Math.min(0.65, targetManualRotX + deltaY * 0.007));
+            stageInertiaY = deltaX * 0.011;
+            stageInertiaX = deltaY * 0.007;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            notifyStageInteraction();
+        }
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (isDraggingStage) {
+            isDraggingStage = false;
+            document.body.style.cursor = '';
+            if (hero3DZone) hero3DZone.style.cursor = 'grab';
+            scheduleStageReturn(1600);
+        }
+    });
 
     // EVENT LISTENERS
     window.addEventListener('mousemove', (e) => {
@@ -1669,11 +2072,32 @@
             }
             universeGeo.attributes.position.needsUpdate = true;
 
-            // Precision mouse parallax + subtle scroll pitch
+            // 360° Interactive Stage Rotation Blending (Drag / Hover / Inertia / Default Animation)
+            if (isDraggingStage) {
+                manualRotY = THREE.MathUtils.lerp(manualRotY, targetManualRotY, 0.22);
+                manualRotX = THREE.MathUtils.lerp(manualRotX, targetManualRotX, 0.22);
+            } else if (isInteractingWithStage) {
+                // Decay inertia after user releases drag
+                targetManualRotY += stageInertiaY;
+                targetManualRotX = Math.max(-0.65, Math.min(0.65, targetManualRotX + stageInertiaX));
+                stageInertiaY *= 0.92;
+                stageInertiaX *= 0.92;
+                manualRotY = THREE.MathUtils.lerp(manualRotY, targetManualRotY, 0.12);
+                manualRotX = THREE.MathUtils.lerp(manualRotX, targetManualRotX, 0.12);
+            } else {
+                // User moved mouse away / released: smoothly glide back to default orientation ("jodi mouse sorai nai as usual ekon jemne animate korse temon e korbe")
+                targetManualRotY = THREE.MathUtils.lerp(targetManualRotY, 0, 0.038);
+                targetManualRotX = THREE.MathUtils.lerp(targetManualRotX, 0, 0.038);
+                manualRotY = THREE.MathUtils.lerp(manualRotY, 0, 0.038);
+                manualRotX = THREE.MathUtils.lerp(manualRotX, 0, 0.038);
+                stageInertiaY = 0;
+                stageInertiaX = 0;
+            }
+
             const scrollPitch = Math.sin(scrollFraction * Math.PI * 2) * 0.10;
             const scrollYaw = Math.cos(scrollFraction * Math.PI) * 0.18;
-            stageGroup.rotation.y = THREE.MathUtils.lerp(stageGroup.rotation.y, -0.55 + scrollYaw + mouse.x * 0.25, 0.05);
-            stageGroup.rotation.x = THREE.MathUtils.lerp(stageGroup.rotation.x, 0.42 + scrollPitch - mouse.y * 0.18, 0.05);
+            stageGroup.rotation.y = -0.55 + scrollYaw + manualRotY;
+            stageGroup.rotation.x = 0.42 + scrollPitch + manualRotX;
 
             // Dynamic mouse-driven point light that follows cursor across page
             devPointLight.position.x = THREE.MathUtils.lerp(devPointLight.position.x, mouse.x * 4.5 + 2.6, 0.08);
@@ -1697,6 +2121,69 @@
             } else {
                 floorShockwaveMat.opacity = 0;
             }
+
+            // Concept 1: Floating Holographic Tech Badges & Orbiting Glass Cubes Animation
+            const coreWorldPos = new THREE.Vector3();
+            coreGroup.getWorldPosition(coreWorldPos);
+            const badgeWorldPositions = [];
+
+            floatingTechBadges.forEach((badge) => {
+                const u = badge.userData;
+                const cfg = u.config;
+
+                // Push outwards smoothly during shockwave burst
+                if (devBurstProgress < 1.0) {
+                    u.burstOffset = THREE.MathUtils.lerp(u.burstOffset, (1.0 - devBurstProgress) * 0.9, 0.18);
+                } else {
+                    u.burstOffset = THREE.MathUtils.lerp(u.burstOffset, 0, 0.05);
+                }
+
+                u.currentAngle += cfg.speed * 0.016 * burstSpeedMult;
+                const radScale = (window.innerWidth <= 968) ? 0.72 : 1.0;
+                const r = (u.baseRadius + u.burstOffset) * radScale;
+                const bx = Math.cos(u.currentAngle) * r;
+                const bz = Math.sin(u.currentAngle) * r;
+                const by = u.baseHeight * radScale + Math.sin(elapsedTime * 1.5 + cfg.phase) * 0.14;
+
+                badge.position.set(bx, by, bz);
+
+                const bScale = (window.innerWidth <= 968) ? 0.82 : 1.0;
+                badge.scale.set(bScale, bScale, bScale);
+
+                // Face outwards and slightly towards camera + mouse parallax tilt
+                badge.rotation.y = -u.currentAngle + Math.PI / 2 + mouse.x * 0.4;
+                badge.rotation.x = Math.sin(elapsedTime * 1.8 + cfg.phase) * 0.12 - mouse.y * 0.25;
+                badge.rotation.z = Math.cos(elapsedTime * 1.4 + cfg.phase) * 0.08;
+
+                const badgeWorldPos = new THREE.Vector3();
+                badge.getWorldPosition(badgeWorldPos);
+                badgeWorldPositions.push(badgeWorldPos);
+
+                // Update core-to-badge laser line
+                if (u.laserMesh) {
+                    const lPos = u.laserMesh.geometry.attributes.position.array;
+                    lPos[0] = coreWorldPos.x;
+                    lPos[1] = coreWorldPos.y;
+                    lPos[2] = coreWorldPos.z;
+                    lPos[3] = badgeWorldPos.x;
+                    lPos[4] = badgeWorldPos.y;
+                    lPos[5] = badgeWorldPos.z;
+                    u.laserMesh.geometry.attributes.position.needsUpdate = true;
+                    u.laserMesh.material.opacity = 0.26 + Math.sin(elapsedTime * 2.8 + cfg.phase) * 0.12;
+                }
+            });
+
+            // Update inter-badge network ring lines
+            interBadgeLines.forEach(item => {
+                const posA = badgeWorldPositions[item.idxA];
+                const posB = badgeWorldPositions[item.idxB];
+                if (posA && posB && item.mesh) {
+                    const lPos = item.mesh.geometry.attributes.position.array;
+                    lPos[0] = posA.x; lPos[1] = posA.y; lPos[2] = posA.z;
+                    lPos[3] = posB.x; lPos[4] = posB.y; lPos[5] = posB.z;
+                    item.mesh.geometry.attributes.position.needsUpdate = true;
+                }
+            });
         } else {
             if (waveMesh) waveMesh.visible = true;
         }
@@ -1859,20 +2346,8 @@
             });
         }
 
-        // Restore saved theme from localStorage, or default to Theme 0 (3D Developer Platform)
-        let initialTheme = 0;
-        try {
-            const saved = localStorage.getItem('portfolio_saved_theme');
-            if (saved === 'auto') {
-                isAutoMode = true;
-                applyTheme(getDateAutoThemeIndex(), false);
-                return;
-            } else if (saved !== null && !isNaN(parseInt(saved, 10))) {
-                initialTheme = parseInt(saved, 10);
-            }
-        } catch (err) {}
-
-        applyTheme(initialTheme, false);
+        // Default theme is ALWAYS Cyber Theme (Theme 0 - 3D Developer Platform)
+        applyTheme(0, false);
     }
 
     // =========================================================================
