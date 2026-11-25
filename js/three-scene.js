@@ -1341,14 +1341,17 @@
     const theme1Group = new THREE.Group();
     scene.add(theme1Group);
 
-    const sphereGeo = new THREE.SphereGeometry(11, 64, 64);
-    const sphereMat = new THREE.MeshPhongMaterial({
-        color: 0x0c0b1a,
-        emissive: 0x2b1055,
-        specular: 0x8a2be2,
-        shininess: 90,
+    const sphereGeo = new THREE.SphereGeometry(10.5, 64, 64);
+    const sphereMat = new THREE.MeshPhysicalMaterial({
+        color: 0x0a0d1f,
+        emissive: 0x312e81,
+        emissiveIntensity: 0.5,
+        roughness: 0.14,
+        metalness: 0.88,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.1,
         transparent: true,
-        opacity: 0.96
+        opacity: 0.94
     });
     const mainSphere = new THREE.Mesh(sphereGeo, sphereMat);
     theme1Group.add(mainSphere);
@@ -1414,26 +1417,36 @@
     const theme2Group = new THREE.Group();
     scene.add(theme2Group);
 
-    const torusGeo = new THREE.TorusGeometry(13.5, 2.0, 36, 100);
-    const torusMatCyan = new THREE.MeshStandardMaterial({
-        color: 0x00d2ff,
-        emissive: 0x00558f,
-        roughness: 0.2,
-        metalness: 0.7
+    const torusGeo = new THREE.TorusGeometry(13.5, 0.55, 32, 120);
+    const torusMatCyan = new THREE.MeshPhysicalMaterial({
+        color: 0x06b6d4,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.65,
+        roughness: 0.15,
+        metalness: 0.85,
+        clearcoat: 1.0
     });
     const torusCyan = new THREE.Mesh(torusGeo, torusMatCyan);
     torusCyan.rotation.set(Math.PI / 4, Math.PI / 6, 0);
     theme2Group.add(torusCyan);
 
-    const torusMatPurple = new THREE.MeshStandardMaterial({
-        color: 0xa855f7,
-        emissive: 0x581c87,
-        roughness: 0.2,
-        metalness: 0.7
+    const torusMatPurple = new THREE.MeshPhysicalMaterial({
+        color: 0x8b5cf6,
+        emissive: 0x4f46e5,
+        emissiveIntensity: 0.65,
+        roughness: 0.15,
+        metalness: 0.85,
+        clearcoat: 1.0
     });
     const torusPurple = new THREE.Mesh(torusGeo, torusMatPurple);
     torusPurple.rotation.set(-Math.PI / 4, -Math.PI / 6, Math.PI / 4);
     theme2Group.add(torusPurple);
+
+    const quantumCore = new THREE.Mesh(
+        new THREE.OctahedronGeometry(4.5, 0),
+        new THREE.MeshPhysicalMaterial({ color: 0x060913, emissive: 0x00d2ff, emissiveIntensity: 1.1, roughness: 0.12, metalness: 0.9, clearcoat: 1.0 })
+    );
+    theme2Group.add(quantumCore);
 
     const orbitTrack2 = createThinNeonRing(22, 0.12, 0xc084fc, Math.PI / 2.5, Math.PI / 8);
     theme2Group.add(orbitTrack2);
@@ -1464,18 +1477,28 @@
     const theme3Group = new THREE.Group();
     scene.add(theme3Group);
 
-    const crystalGeo = new THREE.IcosahedronGeometry(12, 1);
-    const crystalMat = new THREE.MeshBasicMaterial({ color: 0x7f5af0, wireframe: true, transparent: true, opacity: 0.5 });
+    const crystalGeo = new THREE.IcosahedronGeometry(11.5, 0);
+    const crystalMat = new THREE.MeshPhysicalMaterial({
+        color: 0x051410,
+        emissive: 0x10b981,
+        emissiveIntensity: 0.35,
+        roughness: 0.15,
+        metalness: 0.88,
+        transparent: true,
+        opacity: 0.72,
+        clearcoat: 1.0
+    });
     const crystalMesh = new THREE.Mesh(crystalGeo, crystalMat);
+    setupDualGlowEdges(crystalMesh, crystalGeo, 0x10b981, 0x38bdf8, 0.38);
     theme3Group.add(crystalMesh);
 
-    const crystalNucleusGeo = new THREE.DodecahedronGeometry(6.5, 0);
-    const crystalNucleusMat = new THREE.MeshStandardMaterial({ color: 0x2cb67d, emissive: 0x136a43, roughness: 0.2, metalness: 0.8 });
+    const crystalNucleusGeo = new THREE.OctahedronGeometry(5.5, 0);
+    const crystalNucleusMat = new THREE.MeshPhysicalMaterial({ color: 0x064e3b, emissive: 0x2cb67d, emissiveIntensity: 1.2, roughness: 0.15, metalness: 0.9 });
     const crystalNucleus = new THREE.Mesh(crystalNucleusGeo, crystalNucleusMat);
     theme3Group.add(crystalNucleus);
 
-    const crystalRing1 = createThinNeonRing(17, 0.1, 0x2cb67d, Math.PI / 3, Math.PI / 4);
-    const crystalRing2 = createThinNeonRing(19, 0.1, 0x7f5af0, -Math.PI / 4, Math.PI / 3);
+    const crystalRing1 = createThinNeonRing(17, 0.14, 0x10b981, Math.PI / 3, Math.PI / 4);
+    const crystalRing2 = createThinNeonRing(19, 0.12, 0x38bdf8, -Math.PI / 4, Math.PI / 3);
     theme3Group.add(crystalRing1);
     theme3Group.add(crystalRing2);
 
@@ -1511,7 +1534,7 @@
     vortexGeo.setAttribute('color', new THREE.BufferAttribute(vortexColors, 3));
 
     const vortexMat = new THREE.PointsMaterial({
-        size: 1.6,
+        size: 0.72,
         map: particleTexture,
         vertexColors: true,
         transparent: true,
@@ -1520,6 +1543,15 @@
     });
     const vortexMesh = new THREE.Points(vortexGeo, vortexMat);
     theme4Group.add(vortexMesh);
+
+    const nebulaCore = new THREE.Mesh(
+        new THREE.OctahedronGeometry(3.5, 1),
+        new THREE.MeshPhysicalMaterial({ color: 0x1a0b1c, emissive: 0xf43f5e, emissiveIntensity: 1.15, roughness: 0.15, metalness: 0.85 })
+    );
+    theme4Group.add(nebulaCore);
+
+    const nebulaRing = createThinNeonRing(15.5, 0.12, 0xf43f5e, Math.PI / 2.4, 0.2);
+    theme4Group.add(nebulaRing);
 
     // Theme collection
     const themeGroups = [devThemeGroup, theme1Group, theme2Group, theme3Group, theme4Group];
@@ -1594,17 +1626,12 @@
     function getThemeBasePos(index) {
         const isDesktop = window.innerWidth > 968;
         if (index === 0) {
-            // Theme 0: Isometric Cyber-Glass Engineering Stage centered with stageGroup at x = +2.6
-            return {
-                x: 0,
-                y: 0,
-                z: 0
-            };
+            return { x: 0, y: 0, z: 0 };
         }
         return {
-            x: isDesktop ? 18 : 0,
-            y: isDesktop ? 3 : -3,
-            z: 10
+            x: isDesktop ? 2.6 : 0,
+            y: isDesktop ? 0.1 : -0.45,
+            z: 0
         };
     }
 
@@ -1621,8 +1648,8 @@
             id: 0,
             name: 'Cyber Engineering Stage',
             eyebrow: "AVAILABLE FOR OPPORTUNITIES",
-            subtitle: "Senior Angular Developer",
-            tagline: "Bridging creative design and robust frontend engineering at scale — building high-performance enterprise Angular applications in Hamburg.",
+            subtitle: "Senior Angular & DevOps Engineer",
+            tagline: "Bridging enterprise frontend architecture and automated DevOps pipelines — crafting high-performance Angular & WebGL experiences in Hamburg.",
             accent: '#38bdf8',
             primaryAccent: '#38bdf8',
             secondaryAccent: '#6366f1',
@@ -1633,32 +1660,32 @@
             id: 1,
             name: 'Cosmic Sphere (Sample 1)',
             eyebrow: "HELLO, I'M",
-            subtitle: "Senior Angular Developer",
-            tagline: "I build modern, interactive and performant web experiences with Three.js and modern technologies.",
+            subtitle: "Senior Angular & DevOps Engineer",
+            tagline: "Building resilient, automated, and interactive web applications with Angular, TypeScript, Docker, and Three.js.",
             accent: '#818cf8'
         },
         {
             id: 2,
             name: 'Quantum Rings (Sample 2)',
             eyebrow: "WELCOME TO MY PORTFOLIO",
-            subtitle: "Senior Angular Developer",
-            tagline: "I build modern, interactive and performant web experiences with Three.js and modern technologies.",
+            subtitle: "Senior Angular & DevOps Engineer",
+            tagline: "Building resilient, automated, and interactive web applications with Angular, TypeScript, Docker, and Three.js.",
             accent: '#00d2ff'
         },
         {
             id: 3,
             name: 'Cyber Crystal',
-            eyebrow: "SENIOR FRONTEND ENGINEER",
-            subtitle: "Senior Angular Developer",
-            tagline: "Architecting scalable enterprise Angular & WebGL web apps with precision & craft.",
-            accent: '#2cb67d'
+            eyebrow: "SENIOR FRONTEND & DEVOPS",
+            subtitle: "Senior Angular & DevOps Engineer",
+            tagline: "Architecting scalable enterprise Angular apps & automated CI/CD infrastructure with precision.",
+            accent: '#10b981'
         },
         {
             id: 4,
             name: 'Stellar Nebula',
             eyebrow: "CREATIVE TECH ARCHITECT",
-            subtitle: "Senior Angular Developer",
-            tagline: "Bridging creative design and robust frontend engineering at scale in Hamburg.",
+            subtitle: "Senior Angular & DevOps Engineer",
+            tagline: "Bridging creative WebGL experiences and resilient DevOps engineering at scale in Hamburg.",
             accent: '#f43f5e'
         }
     ];
@@ -1927,6 +1954,28 @@
 
         const basePos = getThemeBasePos(currentThemeIndex);
 
+        // Shared 360° Interactive Stage Rotation Blending (Drag / Hover / Inertia / Auto-Return)
+        if (isDraggingStage) {
+            manualRotY = THREE.MathUtils.lerp(manualRotY, targetManualRotY, 0.22);
+            manualRotX = THREE.MathUtils.lerp(manualRotX, targetManualRotX, 0.22);
+        } else if (isInteractingWithStage) {
+            targetManualRotY += stageInertiaY;
+            targetManualRotX = Math.max(-0.65, Math.min(0.65, targetManualRotX + stageInertiaX));
+            stageInertiaY *= 0.92;
+            stageInertiaX *= 0.92;
+            manualRotY = THREE.MathUtils.lerp(manualRotY, targetManualRotY, 0.12);
+            manualRotX = THREE.MathUtils.lerp(manualRotX, targetManualRotX, 0.12);
+        } else {
+            targetManualRotY = THREE.MathUtils.lerp(targetManualRotY, 0, 0.038);
+            targetManualRotX = THREE.MathUtils.lerp(targetManualRotX, 0, 0.038);
+            manualRotY = THREE.MathUtils.lerp(manualRotY, 0, 0.038);
+            manualRotX = THREE.MathUtils.lerp(manualRotX, 0, 0.038);
+            stageInertiaY = 0;
+            stageInertiaX = 0;
+        }
+        const altThemeScale = (window.innerWidth > 968) ? 0.115 : 0.085;
+        const altTargetVec = new THREE.Vector3(altThemeScale, altThemeScale, altThemeScale);
+
         // 1. ANIMATE THEME 0 (ULTRA-RICH LUMINOUS CYBER-GLASS & NEON SHOWCASE)
         if (devThemeGroup.visible) {
             devThemeGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
@@ -2072,28 +2121,6 @@
             }
             universeGeo.attributes.position.needsUpdate = true;
 
-            // 360° Interactive Stage Rotation Blending (Drag / Hover / Inertia / Default Animation)
-            if (isDraggingStage) {
-                manualRotY = THREE.MathUtils.lerp(manualRotY, targetManualRotY, 0.22);
-                manualRotX = THREE.MathUtils.lerp(manualRotX, targetManualRotX, 0.22);
-            } else if (isInteractingWithStage) {
-                // Decay inertia after user releases drag
-                targetManualRotY += stageInertiaY;
-                targetManualRotX = Math.max(-0.65, Math.min(0.65, targetManualRotX + stageInertiaX));
-                stageInertiaY *= 0.92;
-                stageInertiaX *= 0.92;
-                manualRotY = THREE.MathUtils.lerp(manualRotY, targetManualRotY, 0.12);
-                manualRotX = THREE.MathUtils.lerp(manualRotX, targetManualRotX, 0.12);
-            } else {
-                // User moved mouse away / released: smoothly glide back to default orientation ("jodi mouse sorai nai as usual ekon jemne animate korse temon e korbe")
-                targetManualRotY = THREE.MathUtils.lerp(targetManualRotY, 0, 0.038);
-                targetManualRotX = THREE.MathUtils.lerp(targetManualRotX, 0, 0.038);
-                manualRotY = THREE.MathUtils.lerp(manualRotY, 0, 0.038);
-                manualRotX = THREE.MathUtils.lerp(manualRotX, 0, 0.038);
-                stageInertiaY = 0;
-                stageInertiaX = 0;
-            }
-
             const scrollPitch = Math.sin(scrollFraction * Math.PI * 2) * 0.10;
             const scrollYaw = Math.cos(scrollFraction * Math.PI) * 0.18;
             stageGroup.rotation.y = -0.55 + scrollYaw + manualRotY;
@@ -2185,12 +2212,12 @@
                 }
             });
         } else {
-            if (waveMesh) waveMesh.visible = true;
+            if (waveMesh) waveMesh.visible = false;
         }
 
         // 2. ANIMATE THEME 1 (Cosmic Sphere)
         if (theme1Group.visible) {
-            theme1Group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
+            theme1Group.scale.lerp(altTargetVec, 0.08);
             mainSphere.rotation.y = elapsedTime * 0.2;
             atmosphereMesh.rotation.y = -elapsedTime * 0.25;
 
@@ -2205,21 +2232,23 @@
                 b.position.y = b.userData.yOffset + Math.sin(elapsedTime * 1.5 + b.userData.angle) * 2;
             });
 
-            theme1Group.rotation.y = mouse.x * 0.45;
-            theme1Group.rotation.x = -mouse.y * 0.3;
-            theme1Group.position.x = basePos.x;
-            theme1Group.position.y = basePos.y + scrollFraction * 20;
-            theme1Group.position.z = basePos.z - scrollFraction * 25;
+            theme1Group.rotation.y = mouse.x * 0.28 + manualRotY;
+            theme1Group.rotation.x = -mouse.y * 0.2 + manualRotX;
+            theme1Group.position.x = THREE.MathUtils.lerp(theme1Group.position.x, basePos.x - scrollFraction * 0.9, 0.08);
+            theme1Group.position.y = THREE.MathUtils.lerp(theme1Group.position.y, basePos.y - scrollFraction * 0.4, 0.08);
+            theme1Group.position.z = THREE.MathUtils.lerp(theme1Group.position.z, basePos.z - scrollFraction * 1.2, 0.08);
         }
 
         // 3. ANIMATE THEME 2 (Quantum Rings)
         if (theme2Group.visible) {
-            theme2Group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
+            theme2Group.scale.lerp(altTargetVec, 0.08);
             torusCyan.rotation.x = elapsedTime * 0.4;
             torusCyan.rotation.y = elapsedTime * 0.5;
 
             torusPurple.rotation.x = -elapsedTime * 0.35;
             torusPurple.rotation.z = elapsedTime * 0.45;
+            quantumCore.rotation.y = elapsedTime * 0.7;
+            quantumCore.rotation.x = elapsedTime * 0.4;
 
             orbitTrack2.rotation.z = elapsedTime * 0.2;
 
@@ -2230,16 +2259,16 @@
                 b.position.y = b.userData.yOffset + Math.cos(elapsedTime * 1.2 + b.userData.angle) * 2.5;
             });
 
-            theme2Group.rotation.y = mouse.x * 0.45;
-            theme2Group.rotation.x = -mouse.y * 0.3;
-            theme2Group.position.x = basePos.x;
-            theme2Group.position.y = basePos.y + scrollFraction * 20;
-            theme2Group.position.z = basePos.z - scrollFraction * 25;
+            theme2Group.rotation.y = mouse.x * 0.28 + manualRotY;
+            theme2Group.rotation.x = -mouse.y * 0.2 + manualRotX;
+            theme2Group.position.x = THREE.MathUtils.lerp(theme2Group.position.x, basePos.x - scrollFraction * 0.9, 0.08);
+            theme2Group.position.y = THREE.MathUtils.lerp(theme2Group.position.y, basePos.y - scrollFraction * 0.4, 0.08);
+            theme2Group.position.z = THREE.MathUtils.lerp(theme2Group.position.z, basePos.z - scrollFraction * 1.2, 0.08);
         }
 
         // 4. ANIMATE THEME 3 (Cyber Crystal)
         if (theme3Group.visible) {
-            theme3Group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
+            theme3Group.scale.lerp(altTargetVec, 0.08);
             crystalMesh.rotation.x = elapsedTime * 0.3;
             crystalMesh.rotation.y = elapsedTime * 0.4;
             crystalNucleus.rotation.x = -elapsedTime * 0.4;
@@ -2248,24 +2277,26 @@
             crystalRing1.rotation.z = elapsedTime * 0.4;
             crystalRing2.rotation.z = -elapsedTime * 0.3;
 
-            theme3Group.rotation.y = mouse.x * 0.45;
-            theme3Group.rotation.x = -mouse.y * 0.3;
-            theme3Group.position.x = basePos.x;
-            theme3Group.position.y = basePos.y + scrollFraction * 20;
-            theme3Group.position.z = basePos.z - scrollFraction * 25;
+            theme3Group.rotation.y = mouse.x * 0.28 + manualRotY;
+            theme3Group.rotation.x = -mouse.y * 0.2 + manualRotX;
+            theme3Group.position.x = THREE.MathUtils.lerp(theme3Group.position.x, basePos.x - scrollFraction * 0.9, 0.08);
+            theme3Group.position.y = THREE.MathUtils.lerp(theme3Group.position.y, basePos.y - scrollFraction * 0.4, 0.08);
+            theme3Group.position.z = THREE.MathUtils.lerp(theme3Group.position.z, basePos.z - scrollFraction * 1.2, 0.08);
         }
 
         // 5. ANIMATE THEME 4 (Stellar Nebula)
         if (theme4Group.visible) {
-            theme4Group.scale.lerp(new THREE.Vector3(1, 1, 1), 0.06);
+            theme4Group.scale.lerp(altTargetVec, 0.08);
             vortexMesh.rotation.y = elapsedTime * 0.45;
             vortexMesh.rotation.x = 0.2 + Math.sin(elapsedTime * 0.2) * 0.1;
+            nebulaCore.rotation.y = -elapsedTime * 0.6;
+            nebulaRing.rotation.z = elapsedTime * 0.3;
 
-            theme4Group.rotation.y = mouse.x * 0.45;
-            theme4Group.rotation.x = -mouse.y * 0.3;
-            theme4Group.position.x = basePos.x;
-            theme4Group.position.y = basePos.y + scrollFraction * 20;
-            theme4Group.position.z = basePos.z - scrollFraction * 25;
+            theme4Group.rotation.y = mouse.x * 0.28 + manualRotY;
+            theme4Group.rotation.x = -mouse.y * 0.2 + manualRotX;
+            theme4Group.position.x = THREE.MathUtils.lerp(theme4Group.position.x, basePos.x - scrollFraction * 0.9, 0.08);
+            theme4Group.position.y = THREE.MathUtils.lerp(theme4Group.position.y, basePos.y - scrollFraction * 0.4, 0.08);
+            theme4Group.position.z = THREE.MathUtils.lerp(theme4Group.position.z, basePos.z - scrollFraction * 1.2, 0.08);
         }
 
         // Cyber Wave Matrix

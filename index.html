@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kazi Ataul Goni — Senior Angular Developer | Hamburg, Germany</title>
-    <meta name="description" content="Kazi Ataul Goni is a Senior Angular Developer with 6+ years of experience specializing in Angular, TypeScript, RxJS, NgRx, and Three.js 3D web experiences. Based in Hamburg, Germany. Available for opportunities.">
-    <meta name="keywords" content="Kazi Ataul Goni, Senior Angular Developer, Angular Developer Hamburg, Frontend Engineer Germany, TypeScript, RxJS, NgRx, Three.js, WebGL, Siemens, HaCon">
+    <title>Kazi Ataul Goni — Senior Angular &amp; DevOps Engineer | Hamburg, Germany</title>
+    <meta name="description" content="Kazi Ataul Goni is a Senior Angular & DevOps Engineer with 6+ years of experience specializing in Angular, TypeScript, RxJS, NgRx, Docker, CI/CD, and Three.js 3D web experiences. Based in Hamburg, Germany.">
+    <meta name="keywords" content="Kazi Ataul Goni, Senior Angular Engineer, DevOps Engineer Hamburg, Frontend Architect Germany, TypeScript, RxJS, NgRx, Docker, CI/CD, Three.js, WebGL, Siemens, HaCon">
     <meta name="author" content="Kazi Ataul Goni">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://kaziataulgoni.pages.dev/">
@@ -13,22 +13,22 @@
     <!-- Open Graph / Social Meta (LinkedIn, Facebook, Discord, Slack) -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kaziataulgoni.pages.dev/">
-    <meta property="og:site_name" content="Kazi Ataul Goni Portfolio">
-    <meta property="og:title" content="Kazi Ataul Goni — Senior Angular Developer | Hamburg, Germany">
-    <meta property="og:description" content="Senior Angular Developer based in Hamburg, Germany with 6+ years of enterprise experience (HaCon — A Siemens Company). Specialized in Angular, TypeScript, RxJS, NgRx & Interactive 3D WebGL.">
+    <meta property="og:site_name" content="Kazi Ataul Goni — Angular & DevOps Portfolio">
+    <meta property="og:title" content="Kazi Ataul Goni — Senior Angular &amp; DevOps Engineer | Hamburg, Germany">
+    <meta property="og:description" content="Senior Angular & DevOps Engineer in Hamburg (HaCon — A Siemens Company). 6+ years building scalable enterprise Angular apps, automated CI/CD pipelines & interactive 3D WebGL.">
     <meta property="og:image" content="https://kaziataulgoni.pages.dev/assets/og-image.jpg">
     <meta property="og:image:secure_url" content="https://kaziataulgoni.pages.dev/assets/og-image.jpg">
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Kazi Ataul Goni — Senior Angular Developer Portfolio">
+    <meta property="og:image:alt" content="Kazi Ataul Goni — Senior Angular & DevOps Engineer Portfolio">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter / X Cards -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://kaziataulgoni.pages.dev/">
-    <meta name="twitter:title" content="Kazi Ataul Goni — Senior Angular Developer | Hamburg, Germany">
-    <meta name="twitter:description" content="Senior Angular Developer based in Hamburg, Germany with 6+ years of enterprise experience (HaCon — A Siemens Company). Specialized in Angular, TypeScript, RxJS, NgRx & Interactive 3D WebGL.">
+    <meta name="twitter:title" content="Kazi Ataul Goni — Senior Angular &amp; DevOps Engineer | Hamburg, Germany">
+    <meta name="twitter:description" content="Senior Angular & DevOps Engineer in Hamburg (HaCon — A Siemens Company). 6+ years building scalable enterprise Angular apps, automated CI/CD pipelines & interactive 3D WebGL.">
     <meta name="twitter:image" content="https://kaziataulgoni.pages.dev/assets/og-image.jpg">
     <meta name="image" content="https://kaziataulgoni.pages.dev/assets/og-image.jpg">
 
@@ -69,6 +69,10 @@
 
         html {
             scroll-behavior: smooth;
+            color-scheme: dark;
+            background-color: #060913;
+            overscroll-behavior-y: none;
+            overflow-x: clip;
             scrollbar-width: thin;
             scrollbar-color: var(--accent) var(--bg-primary);
         }
@@ -79,10 +83,10 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+            background-color: #060913;
             color: var(--text-primary);
             line-height: 1.7;
-            overflow-x: hidden;
+            overflow-x: clip;
             position: relative;
         }
 
@@ -110,12 +114,15 @@
             width: 100vw; height: 100vh;
             z-index: 0;
             pointer-events: none;
+            background-color: #060913;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         /* 3D MODE PILL */
         .three-mode-pill {
             position: fixed;
-            bottom: 24px; left: 24px;
+            bottom: 24px; right: 84px;
             z-index: 999;
             display: inline-flex;
             align-items: center;
@@ -164,15 +171,9 @@
             transition: opacity 0.3s;
         }
 
-        /* NOISE OVERLAY */
+        /* NOISE OVERLAY (disabled heavy SVG feTurbulence filter to prevent scroll compositing flashes) */
         .noise-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0.012;
-            z-index: 1;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            display: none;
         }
 
         /* GLOBAL NAVIGATION */
@@ -524,76 +525,100 @@
         .name-first { color: #ffffff; }
 
         .name-last {
-            background: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 50%, #06d6e0 100%);
+            background: linear-gradient(120deg, #38bdf8 0%, #8b5cf6 35%, #06d6e0 65%, #38bdf8 100%);
+            background-size: 220% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            animation: textShimmer 7s ease-in-out infinite;
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .hero-subtitle {
-            font-size: clamp(1.3rem, 2.4vw, 2.0rem);
-            font-weight: 500;
-            color: #ffffff;
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
+            font-size: clamp(1.25rem, 2.2vw, 1.85rem);
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 16px;
+            letter-spacing: -0.4px;
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 12px;
         }
 
         .hero-subtitle::after {
-            content: '⚡ Angular Expert';
+            content: '⚡ Angular & DevOps';
             font-size: 0.72rem;
             font-weight: 600;
-            color: #FFE4E6;
-            background: rgba(244, 63, 94, 0.18);
-            border: 1px solid rgba(244, 63, 94, 0.5);
+            color: #e0f2fe;
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(56, 189, 248, 0.2));
+            border: 1px solid rgba(56, 189, 248, 0.45);
             padding: 4px 12px;
             border-radius: 50px;
             letter-spacing: 0.5px;
-            box-shadow: inset 0 0 10px rgba(244, 63, 94, 0.25), 0 0 12px rgba(244, 63, 94, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 16px rgba(56, 189, 248, 0.18);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
 
         .hero-tagline {
-            font-size: 1.05rem;
+            font-size: 1.02rem;
             color: var(--text-secondary);
-            line-height: 1.7;
+            line-height: 1.68;
             max-width: 580px;
-            margin-bottom: 30px;
+            margin-bottom: 22px;
         }
 
         .hero-cta-group {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 14px;
-            margin-bottom: 34px;
+            gap: 12px;
+            margin-bottom: 28px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 13px 26px;
+            padding: 12px 24px;
             border-radius: 50px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 600;
             text-decoration: none;
             transition: var(--transition);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-gradient {
-            background: linear-gradient(135deg, #8b5cf6, #38bdf8);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #38bdf8 100%);
             color: #ffffff;
-            border: none;
-            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 8px 24px rgba(99, 102, 241, 0.38);
+        }
+
+        .btn-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.55s ease;
+        }
+
+        .btn-gradient:hover::before {
+            left: 140%;
         }
 
         .btn-gradient:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(139, 92, 246, 0.55);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 32px rgba(56, 189, 248, 0.42);
         }
 
         .btn-glass-circle {
@@ -625,17 +650,17 @@
         .hero-pro-panel {
             display: inline-flex;
             align-items: center;
-            gap: 18px;
-            padding: 10px 18px;
-            background: rgba(10, 15, 30, 0.68);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            margin-bottom: 28px;
-            font-size: 0.85rem;
-            color: #d1d5db;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            gap: 16px;
+            padding: 9px 18px;
+            background: rgba(10, 15, 30, 0.56);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 50px;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            margin-bottom: 22px;
+            font-size: 0.84rem;
+            color: #e2e8f0;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.3);
         }
 
         /* HERO INTERACTIVE TECH STACK DOCK (CONCEPT 1) */
@@ -643,17 +668,17 @@
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 28px;
-            max-width: 640px;
+            gap: 8px;
+            margin-bottom: 24px;
+            max-width: 620px;
         }
 
         .tech-dock-pill {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            background: rgba(10, 15, 30, 0.72);
+            gap: 7px;
+            padding: 5px 12px;
+            background: rgba(10, 15, 30, 0.62);
             border: 1px solid rgba(255, 255, 255, 0.09);
             border-radius: 30px;
             font-size: 0.80rem;
@@ -869,7 +894,7 @@
         /* 3D MODE PILL UPGRADE */
         .three-mode-pill {
             position: fixed;
-            bottom: 24px; left: 24px;
+            bottom: 24px; right: 84px; left: auto;
             z-index: 999;
             display: inline-flex;
             align-items: center;
@@ -993,6 +1018,122 @@
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 40px rgba(0, 0, 0, 0.45);
         }
 
+        /* THEME 1: COSMIC SPHERE (INDIGO & LAVENDER) */
+        body[data-theme="theme-1"] {
+            --accent: #818cf8;
+            --accent-light: #a5b4fc;
+            --electric-blue: #818cf8;
+            --cyan: #c084fc;
+            --border-hover: rgba(129, 140, 248, 0.38);
+            background: radial-gradient(circle at 75% 25%, #161233 0%, #070612 70%, #03030a 100%);
+        }
+        body[data-theme="theme-1"] .name-last {
+            background: linear-gradient(120deg, #818cf8 0%, #c084fc 50%, #38bdf8 100%);
+            background-size: 220% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body[data-theme="theme-1"] .btn-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 24px rgba(99, 102, 241, 0.38);
+        }
+        body[data-theme="theme-1"] .project-card,
+        body[data-theme="theme-1"] .skill-cat-card,
+        body[data-theme="theme-1"] .timeline-item,
+        body[data-theme="theme-1"] .about-portrait-card,
+        body[data-theme="theme-1"] .contact-info-card,
+        body[data-theme="theme-1"] .contact-form-card {
+            border-color: rgba(129, 140, 248, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        /* THEME 2: QUANTUM RINGS (ELECTRIC CYAN & DEEP TEAL) */
+        body[data-theme="theme-2"] {
+            --accent: #00d2ff;
+            --accent-light: #67e8f9;
+            --electric-blue: #00d2ff;
+            --cyan: #06d6e0;
+            --border-hover: rgba(0, 210, 255, 0.4);
+            background: radial-gradient(circle at 75% 25%, #072030 0%, #040b14 70%, #02050a 100%);
+        }
+        body[data-theme="theme-2"] .name-last {
+            background: linear-gradient(120deg, #00d2ff 0%, #06d6e0 50%, #a855f7 100%);
+            background-size: 220% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body[data-theme="theme-2"] .btn-gradient {
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 24px rgba(6, 182, 212, 0.38);
+        }
+        body[data-theme="theme-2"] .project-card,
+        body[data-theme="theme-2"] .skill-cat-card,
+        body[data-theme="theme-2"] .timeline-item,
+        body[data-theme="theme-2"] .about-portrait-card,
+        body[data-theme="theme-2"] .contact-info-card,
+        body[data-theme="theme-2"] .contact-form-card {
+            border-color: rgba(0, 210, 255, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        /* THEME 3: CYBER CRYSTAL (EMERALD MINT & OBSIDIAN) */
+        body[data-theme="theme-3"] {
+            --accent: #10b981;
+            --accent-light: #34d399;
+            --electric-blue: #10b981;
+            --cyan: #38bdf8;
+            --border-hover: rgba(16, 185, 129, 0.4);
+            background: radial-gradient(circle at 75% 25%, #062118 0%, #040d0a 70%, #020605 100%);
+        }
+        body[data-theme="theme-3"] .name-last {
+            background: linear-gradient(120deg, #10b981 0%, #34d399 45%, #38bdf8 100%);
+            background-size: 220% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body[data-theme="theme-3"] .btn-gradient {
+            background: linear-gradient(135deg, #059669 0%, #0284c7 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 24px rgba(16, 185, 129, 0.35);
+        }
+        body[data-theme="theme-3"] .project-card,
+        body[data-theme="theme-3"] .skill-cat-card,
+        body[data-theme="theme-3"] .timeline-item,
+        body[data-theme="theme-3"] .about-portrait-card,
+        body[data-theme="theme-3"] .contact-info-card,
+        body[data-theme="theme-3"] .contact-form-card {
+            border-color: rgba(16, 185, 129, 0.22);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        /* THEME 4: STELLAR NEBULA (CRIMSON ROSE & VIOLET) */
+        body[data-theme="theme-4"] {
+            --accent: #f43f5e;
+            --accent-light: #fb7185;
+            --electric-blue: #f43f5e;
+            --cyan: #a855f7;
+            --border-hover: rgba(244, 63, 94, 0.4);
+            background: radial-gradient(circle at 75% 25%, #230a18 0%, #0c050d 70%, #050206 100%);
+        }
+        body[data-theme="theme-4"] .name-last {
+            background: linear-gradient(120deg, #f43f5e 0%, #a855f7 50%, #38bdf8 100%);
+            background-size: 220% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body[data-theme="theme-4"] .btn-gradient {
+            background: linear-gradient(135deg, #e11d48 0%, #7c3aed 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 8px 24px rgba(244, 63, 94, 0.38);
+        }
+        body[data-theme="theme-4"] .project-card,
+        body[data-theme="theme-4"] .skill-cat-card,
+        body[data-theme="theme-4"] .timeline-item,
+        body[data-theme="theme-4"] .about-portrait-card,
+        body[data-theme="theme-4"] .contact-info-card,
+        body[data-theme="theme-4"] .contact-form-card {
+            border-color: rgba(244, 63, 94, 0.22);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+
         /* HERO BOTTOM BAR */
         .hero-bottom-bar {
             width: 100%;
@@ -1078,9 +1219,10 @@
             position: fixed;
             pointer-events: none;
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.16;
+            opacity: 0.14;
             z-index: 1;
+            transform: translateZ(0);
+            will-change: transform;
             animation: floatAurora 20s ease-in-out infinite alternate;
         }
 
@@ -1941,9 +2083,7 @@
             }
 
             .three-mode-pill {
-                bottom: 16px;
-                left: 16px;
-                padding: 6px 12px;
+                display: none;
             }
 
             .pill-labels .pill-primary {
@@ -2185,65 +2325,65 @@
                     <span class="name-first">Kazi Ataul</span> <span class="name-last">Goni</span>
                 </h1>
 
-                <h2 class="hero-subtitle">Senior Angular Developer</h2>
+                <h2 class="hero-subtitle">Senior Angular &amp; DevOps Engineer</h2>
 
                 <p class="hero-tagline">
-                    Bridging creative design and robust frontend engineering at scale — building high-performance enterprise Angular applications in Hamburg.
+                    Bridging enterprise frontend architecture and automated DevOps pipelines — crafting high-performance Angular &amp; WebGL experiences in Hamburg.
                 </p>
 
                 <!-- Professional Info Panel -->
                 <div class="hero-pro-panel">
                     <div class="hero-pro-item">
-                        <span>📍</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         <span>Hamburg, Germany</span>
                     </div>
-                    <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.1);"></div>
+                    <div style="width: 1px; height: 14px; background: rgba(255,255,255,0.12);"></div>
                     <div class="hero-pro-item">
-                        <span>💼</span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                         <span>HaCon — A Siemens Company</span>
                     </div>
                 </div>
 
-                <!-- Hero Interactive Tech Stack Dock (Concept 1 Integration) -->
+                <!-- Hero Interactive Tech Stack Dock -->
                 <div class="hero-tech-dock">
                     <div class="tech-dock-pill pill-angular">
                         <span class="tech-pill-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span>
-                        <span class="tech-pill-icon">🅰️</span>
+                        <span class="tech-pill-icon" style="color:#f43f5e; font-family:'JetBrains Mono',monospace; font-weight:700;">Ng</span>
                         <span>Angular 21</span>
                     </div>
                     <div class="tech-dock-pill pill-ts">
                         <span class="tech-pill-dot" style="background:#38bdf8; box-shadow:0 0 8px #38bdf8;"></span>
-                        <span class="tech-pill-icon" style="color:#38bdf8; font-weight:800;">TS</span>
+                        <span class="tech-pill-icon" style="color:#38bdf8; font-family:'JetBrains Mono',monospace; font-weight:700;">TS</span>
                         <span>TypeScript</span>
                     </div>
                     <div class="tech-dock-pill pill-js">
                         <span class="tech-pill-dot" style="background:#fbbf24; box-shadow:0 0 8px #fbbf24;"></span>
-                        <span class="tech-pill-icon" style="color:#fbbf24; font-weight:800;">JS</span>
+                        <span class="tech-pill-icon" style="color:#fbbf24; font-family:'JetBrains Mono',monospace; font-weight:700;">JS</span>
                         <span>JavaScript</span>
                     </div>
                     <div class="tech-dock-pill pill-rxjs">
                         <span class="tech-pill-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span>
-                        <span class="tech-pill-icon" style="color:#f43f5e; font-weight:800;">Rx</span>
+                        <span class="tech-pill-icon" style="color:#f43f5e; font-family:'JetBrains Mono',monospace; font-weight:700;">Rx</span>
                         <span>RxJS · NgRx</span>
                     </div>
                     <div class="tech-dock-pill pill-html">
                         <span class="tech-pill-dot" style="background:#f97316; box-shadow:0 0 8px #f97316;"></span>
-                        <span class="tech-pill-icon" style="color:#f97316; font-weight:800;">5</span>
+                        <span class="tech-pill-icon" style="color:#f97316; font-family:'JetBrains Mono',monospace; font-weight:700;">H5</span>
                         <span>HTML5</span>
                     </div>
                     <div class="tech-dock-pill pill-css">
                         <span class="tech-pill-dot" style="background:#38bdf8; box-shadow:0 0 8px #38bdf8;"></span>
-                        <span class="tech-pill-icon" style="color:#38bdf8; font-weight:800;">3</span>
+                        <span class="tech-pill-icon" style="color:#38bdf8; font-family:'JetBrains Mono',monospace; font-weight:700;">C3</span>
                         <span>CSS3</span>
                     </div>
                     <div class="tech-dock-pill pill-docker">
                         <span class="tech-pill-dot" style="background:#06d6e0; box-shadow:0 0 8px #06d6e0;"></span>
-                        <span class="tech-pill-icon">🐳</span>
-                        <span>Docker · DevOps</span>
+                        <span class="tech-pill-icon" style="color:#06d6e0; font-family:'JetBrains Mono',monospace; font-weight:700;">Ops</span>
+                        <span>Docker · CI/CD</span>
                     </div>
                     <div class="tech-dock-pill pill-three">
                         <span class="tech-pill-dot" style="background:#a855f7; box-shadow:0 0 8px #a855f7;"></span>
-                        <span class="tech-pill-icon" style="color:#a855f7; font-weight:800;">△</span>
+                        <span class="tech-pill-icon" style="color:#a855f7; font-family:'JetBrains Mono',monospace; font-weight:700;">3D</span>
                         <span>Three.js WebGL</span>
                     </div>
                 </div>
@@ -2257,7 +2397,7 @@
                         <span>Download CV</span>
                     </a>
                     <a href="#contact" class="btn btn-pulse-spark">
-                        <span>✨ Let's Connect</span>
+                        <span>Let's Connect</span>
                     </a>
                 </div>
 
@@ -2269,12 +2409,12 @@
                     </div>
                     <div class="quick-stat-sep"></div>
                     <div class="quick-stat">
-                        <span class="qs-num">🏢 5</span>
-                        <span class="qs-label">Tech & Research Roles</span>
+                        <span class="qs-num">5</span>
+                        <span class="qs-label">Tech &amp; Research Roles</span>
                     </div>
                     <div class="quick-stat-sep"></div>
                     <div class="quick-stat">
-                        <span class="qs-num">🎓 M.Sc & B.Sc</span>
+                        <span class="qs-num">M.Sc &amp; B.Sc</span>
                         <span class="qs-label">Engineering Degrees</span>
                     </div>
                 </div>
@@ -2283,14 +2423,14 @@
             <!-- Right Column: 3D Scene Anchor with Floating Developer Badge & 360° Interaction -->
             <div class="hero-right" id="hero3DZone">
                 <div class="stage-360-hint" id="stage360Hint">
-                    <span class="hint-icon">🔄</span>
-                    <span class="hint-text">Drag or hover to rotate 360°</span>
+                    <span class="hint-icon">↻</span>
+                    <span class="hint-text">Drag to rotate 360°</span>
                 </div>
                 <div class="hero-floating-glass-card">
                     <img src="profile.jpg" alt="Kazi Ataul Goni" class="mini-profile-pic" />
                     <div class="card-info">
                         <span class="card-title">Kazi Ataul Goni</span>
-                        <span class="card-tech-stack">Angular 21 · TypeScript · RxJS · Three.js</span>
+                        <span class="card-tech-stack">Angular 21 · DevOps · RxJS · Three.js</span>
                         <span class="card-status-line"><span class="status-dot-emerald"></span>Open to Senior / Architect Opportunities</span>
                     </div>
                 </div>
@@ -2326,7 +2466,7 @@
                     <div class="about-id-badge">
                         <div class="id-badge-info">
                             <h4>Kazi Ataul Goni</h4>
-                            <p>Senior Angular Developer · Hamburg, Germany</p>
+                            <p>Senior Angular &amp; DevOps Engineer · Hamburg, Germany</p>
                         </div>
                         <a href="https://linkedin.com/in/kazi-ataul-goni-71aa335b" target="_blank" rel="noopener" class="social-btn" style="width:36px; height:36px;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 0 0-1.64 1.64 1.64 1.64 0 0 0 1.64 1.64 1.64 1.64 0 0 0 1.64-1.64 1.64 1.64 0 0 0-1.64-1.64z"/></svg>
@@ -2341,15 +2481,15 @@
                     </div>
 
                     <p style="font-size: 1.05rem; color: #fff; margin-bottom: 16px;">
-                        I'm a passionate <strong>Senior Frontend Developer</strong> based in <strong>Hamburg, Germany</strong>, with over <strong>6 years of professional experience</strong> building scalable, high-performance web applications.
+                        I'm a passionate <strong>Senior Angular &amp; DevOps Engineer</strong> based in <strong>Hamburg, Germany</strong>, with over <strong>6 years of professional experience</strong> building scalable, high-performance web applications.
                     </p>
 
                     <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                        Currently working at <strong>HaCon — A Siemens Company</strong>, I specialize in the <strong>Angular ecosystem</strong>, creating enterprise-grade applications that serve thousands of users. I thrive on transforming complex requirements into elegant, user-friendly interfaces.
+                        Currently working at <strong>HaCon — A Siemens Company</strong>, I specialize in the <strong>Angular ecosystem</strong> and automated <strong>DevOps workflows</strong>, creating enterprise-grade applications that serve thousands of users. I thrive on transforming complex requirements into elegant, user-friendly interfaces.
                     </p>
 
                     <p style="color: var(--text-secondary); margin-bottom: 24px;">
-                        I'm driven by clean code, modern architecture, and the constant pursuit of better developer experiences.
+                        I'm driven by clean code, modern architecture, automated delivery, and the constant pursuit of better developer experiences.
                     </p>
 
                     <div class="about-stats-grid">
@@ -2446,16 +2586,18 @@
                     </div>
                 </div>
 
-                <!-- 4. Version Control -->
+                <!-- 4. DevOps & Version Control -->
                 <div class="skill-cat-card reveal">
                     <div class="skill-cat-header">
-                        <div class="cat-icon">🐙</div>
+                        <div class="cat-icon">🐳</div>
                         <div>
-                            <h3 class="cat-title">Version Control</h3>
-                            <p style="font-size:0.75rem; color:var(--text-muted);">Source Code Management</p>
+                            <h3 class="cat-title">DevOps &amp; Version Control</h3>
+                            <p style="font-size:0.75rem; color:var(--text-muted);">CI/CD, Containers &amp; Source Control</p>
                         </div>
                     </div>
                     <div class="skill-chips">
+                        <span class="skill-chip primary-highlight" style="background: rgba(6, 214, 224, 0.14); border-color: rgba(6, 214, 224, 0.5); box-shadow: 0 0 14px rgba(6, 214, 224, 0.25);">Docker ★</span>
+                        <span class="skill-chip">CI/CD Pipelines</span>
                         <span class="skill-chip">Git</span>
                     </div>
                 </div>
